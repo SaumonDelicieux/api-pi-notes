@@ -83,10 +83,10 @@ export function login(req: Request, res: Response): void {
         token: userToken,
       });
     })
-    .catch((err) => {
+    .catch(() => {
       res.status(404).send({
         auth: false,
-        message: err,
+        message: "Identifier not valid",
       });
     });
 }
