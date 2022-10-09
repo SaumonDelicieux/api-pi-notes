@@ -1,10 +1,6 @@
-import express from "express";
-const app = express();
+import "dotenv/config";
+import { start } from "./services/service.service";
+import { dbConnect } from "./services/mongoose.service";
 
-app.get("/", function (req, res) {
-  res.send("Hello world 2").status(200);
-});
-
-app.listen(3000, () => {
-  console.log("App listening on PORT 3000");
-});
+dbConnect();
+start();
