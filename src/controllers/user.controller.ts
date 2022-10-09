@@ -57,7 +57,7 @@ export async function register(req: Request, res: Response) {
 
 export function login(req: Request, res: Response): void {
   UserSchema.findOne({
-    $or: [{ identifer: req.body.email }, { identifer: req.body.phoneNumber }],
+    $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
   })
     .then((user) => {
       if (!bcrypt.compareSync(req.body.password, user!.password)) {
