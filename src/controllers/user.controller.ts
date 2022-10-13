@@ -95,16 +95,47 @@ export function login(req: Request, res: Response): void {
           token: userToken,
         });
       })
-      .catch(() => {
+      .catch((err) => {
         res.status(404).send({
           auth: false,
-          message: "Identifier not valid",
+          message: err.message || "Some error occured",
         });
       });
   } else {
     res.status(400).send({
       auth: false,
       message: "Missing data",
+    });
+  }
+}
+
+export async function getById(req: Request, res: Response) {
+  if (req.body.id) {
+    UserSchema.findById(req.body.id)
+      .then((user) => {
+        if (user) {
+          const userDetail: IUser = {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            isPremium: user.isPremium,
+            phoneNumber: user.phoneNumber ?? "",
+          };
+          res.status(200).send({
+            message: "User Find",
+            user: userDetail,
+          });
+        }
+      })
+      .catch(() => {
+        res.status(404).send({
+          message: "User not found",
+        });
+      });
+  } else {
+    res.status(400).send({
+      auth: false,
+      message: "Missing data ID",
     });
   }
 }

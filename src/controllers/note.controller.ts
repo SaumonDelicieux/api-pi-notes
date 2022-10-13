@@ -2,15 +2,15 @@ import { NoteSchema } from "../models/note.model";
 import { Request, Response } from "express";
 
 export async function createNote(req: Request, res: Response) {
-
   const note = new NoteSchema({
+    folderID: req.body.folderID,
     title: req.body.title,
     text: req.body.text,
-    state: req.body.state,
+    state: "Brouillant",
     dateOfInscription: new Date(),
     lastUpdateDate: new Date(),
   });
-  
+
   note
     .save()
     .then((note) => {
@@ -23,4 +23,12 @@ export async function createNote(req: Request, res: Response) {
         message: err.message || "Some error occured",
       });
     });
+}
+
+export async function getNotes(req: Request, res: Response) {
+  NoteSchema.find({ folderID: req.body.folderID }).then((notes) => {
+    res.status(200).send({
+      notes,
+    });
+  });
 }

@@ -3,6 +3,11 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const noteSchema = new Schema({
+  folderID: {
+    type: String,
+    require: true,
+  },
+
   title: {
     type: String,
     require: true,
@@ -14,7 +19,7 @@ const noteSchema = new Schema({
   state: {
     type: String,
     required: true,
-    unique: true,
+    enum: ["Publié", "Archivé", "Brouillant"],
   },
 });
 
