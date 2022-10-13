@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha src/test/index.ts",
     "lint": "eslint . --fix",
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "start": "node src/index.ts"
   },
   "repository": {
     "type": "git",
