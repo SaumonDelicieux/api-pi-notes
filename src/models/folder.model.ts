@@ -9,8 +9,8 @@ const folderSchema = new Schema({
   },
   userId: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
-    require: true
+    ref: "User",
+    require: true,
   },
   dateOfInscription: {
     type: String,

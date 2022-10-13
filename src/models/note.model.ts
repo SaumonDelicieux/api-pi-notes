@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 
 const noteSchema = new Schema({
   folderID: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "Folder",
     require: true,
   },
 
