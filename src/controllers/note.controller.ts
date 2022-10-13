@@ -7,7 +7,7 @@ export async function createNote(req: Request, res: Response) {
     title: req.body.title,
     text: req.body.text,
     state: "Brouillant",
-    dateOfInscription: new Date(),
+    creationDate: new Date(),
     lastUpdateDate: new Date(),
   });
 

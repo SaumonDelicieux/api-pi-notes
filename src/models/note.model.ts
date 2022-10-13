@@ -21,6 +21,12 @@ const noteSchema = new Schema({
     required: true,
     enum: ["Publié", "Archivé", "Brouillant"],
   },
+  creationDate: {
+    type: String,
+  },
+  lastUpdateDate: {
+    type: String,
+  },
 });
 
 export const NoteSchema = mongoose.model("Note", noteSchema);
