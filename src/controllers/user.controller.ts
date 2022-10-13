@@ -82,8 +82,7 @@ export function login(req: Request, res: Response): void {
         const userToken = jwt.sign(
           {
             id: user!._id,
-            password: user!.password,
-            subscription: user!.isPremium,
+            isPremium: user!.isPremium,
           },
           jwtSecret as string,
           {
