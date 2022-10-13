@@ -41,7 +41,7 @@ export async function register(req: Request, res: Response) {
       );
 
       res.status(200).send({
-        message: "Utilisateur bien ajouter",
+        message: "User has been added",
         auth: true,
         token: userToken,
       });
