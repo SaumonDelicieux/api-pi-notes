@@ -33,6 +33,5 @@ jobs:
           else
           npm i
           fi
-      - run: npm i mocha
       - run: npm run build --if-present
       - run: npm test --if-present
