@@ -1,21 +1,20 @@
-import { NoteSchema } from "../models/note.model";
+import { FolderSchema } from "../models/folder.model";
 import { Request, Response } from "express";
 
-export async function createNote(req: Request, res: Response) {
+export async function createFolder(req: Request, res: Response) {
 
-  const note = new NoteSchema({
+  const folder = new FolderSchema({
     title: req.body.title,
-    text: req.body.text,
-    state: req.body.state,
+    userId: req.body.userId,
     creationDate: new Date(),
     lastUpdateDate: new Date(),
   });
   
-  note
+  folder
     .save()
-    .then((note) => {
+    .then((folder) => {
       res.status(200).send({
-        message: `${note.title} Note has been added`,
+        message: `${folder.title} Folder has been added`,
       });
     })
     .catch((err) => {
