@@ -1,4 +1,3 @@
-import { Identifier } from "./../../node_modules/typescript/lib/typescript.d";
 import { UserSchema } from "../models/user.model";
 import { Request, Response } from "express";
 import { jwtSecret } from "../configs/index.config";
