@@ -30,11 +30,11 @@ const userSchema = new Schema({
     type: Boolean,
     required: true,
   },
-  dateOfInscription: {
-    type: String,
+  creationDate: {
+    type: Date,
   },
   lastUpdateDate: {
-    type: String,
+    type: Date,
   },
 });
 

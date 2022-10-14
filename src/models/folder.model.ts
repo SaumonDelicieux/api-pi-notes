@@ -19,7 +19,7 @@ const folderSchema = new Schema({
     ref: "User",
     require: true,
   },
-  dateOfInscription: {
+  creationDate: {
     type: String,
   },
   lastUpdateDate: {
