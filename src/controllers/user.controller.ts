@@ -16,7 +16,7 @@ export async function register(req: Request, res: Response) {
     password: hashedPassword,
     phoneNumber: req.body.phoneNumber,
     isPremium: false,
-    dateOfInscription: new Date(),
+    creationDate: new Date(),
     lastUpdateDate: new Date(),
   });
   const a = await UserSchema.findOne({

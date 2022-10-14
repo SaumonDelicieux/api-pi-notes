@@ -6,6 +6,8 @@ import { foldersRouter } from "../routes/folder.route";
 import cors from "cors";
 import bodyParser from "body-parser";
 
+
+
 const app = express();
 
 app.use(bodyParser.json());
