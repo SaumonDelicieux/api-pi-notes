@@ -14,6 +14,7 @@ export async function registerSucces(user: IUser) {
   };
   sendMail(nodemailer);
 }
+
 const getTemplate = (type = "basic") => {
   return fs.readFileSync(
     path.join(__dirname, "../emails/template/", `template-${type}.html`),
