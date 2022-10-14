@@ -1,7 +1,8 @@
 import express from "express";
-import { createNote, getNotes } from "../controllers/note.controller";
+import { createNote, getNotes, getNote } from "../controllers/note.controller";
 
 export const notesRouter = express.Router();
 
 notesRouter.post("/notes/createNote", createNote);
-notesRouter.post("/notes/getNotes", getNotes);
+notesRouter.get("/notes/getNotes", getNotes);
+notesRouter.get("/notes/getNote", getNote);

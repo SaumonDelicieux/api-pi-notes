@@ -3,9 +3,15 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const noteSchema = new Schema({
-  folderID: {
+  folderId: {
     type: Schema.Types.ObjectId,
     ref: "Folder",
+    require: true,
+  },
+
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
     require: true,
   },
 

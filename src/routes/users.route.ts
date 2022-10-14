@@ -5,4 +5,4 @@ export const usersRouter = express.Router();
 
 usersRouter.post("/users/register", register);
 usersRouter.post("/users/login", login);
-usersRouter.post("/users/getById", getById);
+usersRouter.get("/users/getById", getById);
