@@ -1,4 +1,4 @@
-import { UserSchema } from "../models/user.model";
+import { UserSchema } from "../models";
 import { Request, Response } from "express";
 import { jwtSecret } from "../configs/index.config";
 import bcrypt from "bcrypt";
@@ -19,13 +19,6 @@ export async function register(req: Request, res: Response) {
     creationDate: new Date(),
     lastUpdateDate: new Date(),
   });
-  const a = await UserSchema.findOne({
-    $or: [{ email: req.body.email }, { phoneNumber: req.body.phoneNumber }],
-  });
-  if (a) {
-    res.status(409).send({ message: "User alerdy exist" });
-    return false;
-  }
   user
     .save()
     .then((user) => {
@@ -95,16 +88,49 @@ export function login(req: Request, res: Response): void {
           token: userToken,
         });
       })
-      .catch(() => {
+      .catch((err) => {
         res.status(404).send({
           auth: false,
-          message: "Identifier not valid",
+          message: err.message || "Some error occured",
         });
       });
   } else {
     res.status(400).send({
       auth: false,
       message: "Missing data",
+    });
+  }
+}
+
+export async function getById(req: Request, res: Response) {
+  if (req.body.id) {
+    UserSchema.findById(req.body.id)
+      .then((user) => {
+        if (user) {
+          const userDetail: IUser = {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            isPremium: user.isPremium,
+            phoneNumber: user.phoneNumber ?? "",
+          };
+          res.status(200).send({
+            succes: true,
+            message: "User Find",
+            user: userDetail,
+          });
+        }
+      })
+      .catch(() => {
+        res.status(501).send({
+          succes: true,
+          message: "User not found",
+        });
+      });
+  } else {
+    res.status(400).send({
+      succes: false,
+      message: "Missing data ID",
     });
   }
 }

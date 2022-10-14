@@ -3,6 +3,18 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const noteSchema = new Schema({
+  folderId: {
+    type: Schema.Types.ObjectId,
+    ref: "Folder",
+    require: true,
+  },
+
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    require: true,
+  },
+
   title: {
     type: String,
     require: true,
@@ -14,7 +26,7 @@ const noteSchema = new Schema({
   state: {
     type: String,
     required: true,
-    unique: true,
+    enum: ["Publié", "Archivé", "Brouillant"],
   },
   creationDate: {
     type: String,
