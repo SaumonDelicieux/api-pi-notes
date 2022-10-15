@@ -6,6 +6,7 @@ import path from "path";
 export async function registerSucces(user: IUser) {
   let htmltosend = getTemplate("welcom");
   const reg = new RegExp("(__customer__)", "g");
+
   htmltosend = htmltosend.replace(reg, `${user.firstName} ${user.lastName}`);
   const nodemailer: IMailOptions = {
     to: user.email,
@@ -24,7 +25,8 @@ const getTemplate = (type = "basic") => {
 
 export async function sendMail(mailOptions: IMailOptions) {
   const mailOption: IMailOptions = {
-    from: "no-replay@gmail.com",
+    from: "Pi'note teams <noreply.pi-note@gmail.com>",
+    replyTo: "noreply.pi-note@gmail.com",
     to: mailOptions.to,
     subject: mailOptions.subject,
     text: mailOptions.text,
