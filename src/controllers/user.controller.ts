@@ -27,7 +27,7 @@ export async function register(req: Request, res: Response) {
           id: user._id,
           isPremium: user.isPremium,
           firstName: user.firstName,
-          lastName: user.lastName
+          lastName: user.lastName,
         },
         jwtSecret as string,
         {
@@ -46,7 +46,7 @@ export async function register(req: Request, res: Response) {
 
       res.status(200).send({
         message: "User has been added",
-        auth: true,
+        succes: true,
         token: userToken,
       });
     })
@@ -64,10 +64,10 @@ export function login(req: Request, res: Response): void {
       $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
     })
       .then((user) => {
-        if (!bcrypt.compareSync(req.body.password, user!.password)) {
+        if (!bcrypt.compareSync(req.body.password, user?.password ?? "")) {
           res.status(401).send({
             message: "Invalid password",
-            auth: false,
+            succes: false,
             token: null,
           });
           return false;
@@ -76,9 +76,9 @@ export function login(req: Request, res: Response): void {
         const userToken = jwt.sign(
           {
             id: user!._id,
-            isPremium: user!.isPremium,
-            firstName: user!.firstName,
-            lastName: user!.lastName
+            isPremium: user?.isPremium,
+            firstName: user?.firstName,
+            lastName: user?.lastName,
           },
           jwtSecret as string,
           {
@@ -87,19 +87,19 @@ export function login(req: Request, res: Response): void {
         );
 
         res.status(200).send({
-          auth: true,
+          succes: true,
           token: userToken,
         });
       })
       .catch((err) => {
         res.status(404).send({
-          auth: false,
+          succes: false,
           message: err.message || "Some error occured",
         });
       });
   } else {
     res.status(400).send({
-      auth: false,
+      succes: false,
       message: "Missing data",
     });
   }

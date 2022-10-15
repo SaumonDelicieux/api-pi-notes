@@ -1,5 +1,6 @@
 import { NoteSchema } from "../models";
 import { Request, Response } from "express";
+import { INote } from "../types";
 
 export async function createNote(req: Request, res: Response) {
   const note = new NoteSchema({
@@ -31,9 +32,18 @@ export async function createNote(req: Request, res: Response) {
 export async function getNotes(req: Request, res: Response) {
   NoteSchema.find({ userId: req.body.userId })
     .then((notes) => {
+      const groupedNotes: { [key: string]: Array<INote> } = {};
+      notes.forEach((element) => {
+        const key = element.userId ?? "Root";
+        if (groupedNotes[key] != null) {
+          groupedNotes[key].push(element);
+        } else {
+          groupedNotes[key] = [element];
+        }
+      });
       res.status(200).send({
         succes: true,
-        notes,
+        groupedNotes,
       });
     })
     .catch((err) => {

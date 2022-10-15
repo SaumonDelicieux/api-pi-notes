@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { INote } from "../types";
 
 const Schema = mongoose.Schema;
 
@@ -12,7 +13,7 @@ const noteSchema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
     ref: "User",
-    require: true,
+    require: false,
   },
 
   title: {
@@ -36,4 +37,4 @@ const noteSchema = new Schema({
   },
 });
 
-export const NoteSchema = mongoose.model("Note", noteSchema);
+export const NoteSchema = mongoose.model<INote>("Note", noteSchema);
