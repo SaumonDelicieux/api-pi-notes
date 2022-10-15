@@ -7,7 +7,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 
-export function sendEmailForResetPassword(req: Request, res: Response): void {
+export function sendEmailToResetPassword(req: Request, res: Response): void {
   if (req.body.identifer) {
     UserSchema.findOne({
       $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
@@ -28,6 +28,7 @@ export function sendEmailForResetPassword(req: Request, res: Response): void {
 
             res.status(200).send({
               message: "Email sended",
+              email: user!.email,
             });
           })
           .catch(() => {
@@ -61,6 +62,7 @@ export function sendEmailForResetPassword(req: Request, res: Response): void {
 
             res.status(200).send({
               message: "Email sended",
+              email: user!.email,
             });
           });
       })
@@ -86,7 +88,7 @@ export function verifyIfTokenExist(req: Request, res: Response): void {
           if (token!.token === req.body.token) {
             res.status(200).send({
               auth: true,
-              message: "Succes",
+              message: "Valid token",
             });
           }
         } else {
@@ -110,10 +112,14 @@ export function verifyIfTokenExist(req: Request, res: Response): void {
 }
 
 export function resetPasswordAndDeleteToken(req: any, res: Response): void {
-  if (req.data && req.body.newPassword) {
-    const hashedPassword = bcrypt.hashSync(req.body.newPassword, 10);
+  if (req.data && req.body.password) {
+    const hashedPassword = bcrypt.hashSync(req.body.password, 10);
 
-    UserSchema.findOne({ userId: req.data.id })
+    UserSchema.findByIdAndUpdate(
+      { _id: req.data.id },
+      { password: hashedPassword },
+      { new: true }
+    )
       .then((user) => {
         if (user) {
           user.password = hashedPassword;

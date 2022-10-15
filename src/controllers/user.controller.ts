@@ -25,8 +25,9 @@ export async function register(req: Request, res: Response) {
       const userToken = jwt.sign(
         {
           id: user._id,
-          password: user.password,
-          subscription: user.isPremium,
+          isPremium: user.isPremium,
+          firstName: user.firstName,
+          lastName: user.lastName
         },
         jwtSecret as string,
         {
@@ -76,6 +77,8 @@ export function login(req: Request, res: Response): void {
           {
             id: user!._id,
             isPremium: user!.isPremium,
+            firstName: user!.firstName,
+            lastName: user!.lastName
           },
           jwtSecret as string,
           {

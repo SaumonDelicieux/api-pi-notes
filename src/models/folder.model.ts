@@ -13,7 +13,6 @@ const folderSchema = new Schema({
     ref: "Folder",
     require: false,
   },
-
   userId: {
     type: Schema.Types.ObjectId,
     ref: "User",
