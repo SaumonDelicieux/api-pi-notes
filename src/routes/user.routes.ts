@@ -8,15 +8,15 @@ import {
 
 import { login, register, getById } from "../controllers/user.controller";
 
-export const usersRouter = express.Router();
+export const userRouter = express.Router();
 
-usersRouter.post("/users/register", register);
-usersRouter.post("/users/login", login);
-usersRouter.post("/users/sendEmailToResetPassword", sendEmailToResetPassword);
-usersRouter.post("/users/checkToken", verifyIfTokenExist);
-usersRouter.post(
+userRouter.post("/users/register", register);
+userRouter.post("/users/login", login);
+userRouter.post("/users/sendEmailToResetPassword", sendEmailToResetPassword);
+userRouter.post("/users/checkToken", verifyIfTokenExist);
+userRouter.post(
   "/users/updatePassword",
   verifyToken,
   resetPasswordAndDeleteToken
 );
-usersRouter.get("/users/getById", getById);
+userRouter.get("/users/getById", getById);
