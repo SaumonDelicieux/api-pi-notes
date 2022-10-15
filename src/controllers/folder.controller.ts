@@ -55,15 +55,16 @@ export async function getFolders(req: Request, res: Response) {
     userId: req.body.userId,
   })
     .then((folders) => {
-      const groupedFolders: { [key: string]: Array<IFolders> } = {};
+      const groupedFolder: { [key: string]: Array<IFolders> } = {};
       folders.forEach((element) => {
         const key = element.parentId ?? "Root";
-        if (groupedFolders[key] != null) {
-          groupedFolders[key].push(element);
+        if (groupedFolder[key] != null) {
+          groupedFolder[key].push(element);
         } else {
-          groupedFolders[key] = [element];
+          groupedFolder[key] = [element];
         }
       });
+      const groupedFolders = Object.entries(groupedFolder);
       res.status(200).send({
         groupedFolders,
       });
