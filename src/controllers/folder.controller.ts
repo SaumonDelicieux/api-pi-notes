@@ -17,19 +17,20 @@ export async function createFolder(req: Request, res: Response) {
         .save()
         .then((folder) => {
           res.status(200).send({
-            succes: true,
+            success: true,
             message: `${folder.title} has been added`,
+            folder,
           });
         })
         .catch((err) => {
           if (err.message.toString().includes("Folder validation failed")) {
             res.status(401).send({
-              succes: false,
+              success: false,
               message: "Parent Folder not found",
             });
           } else {
             res.status(500).send({
-              succes: false,
+              success: false,
               message: err.message || "Some error occured",
             });
           }
@@ -38,12 +39,12 @@ export async function createFolder(req: Request, res: Response) {
     .catch((err) => {
       if (err.message.toString().includes('model "User"')) {
         res.status(401).send({
-          succes: false,
+          success: false,
           message: "user not found",
         });
       } else {
         res.status(500).send({
-          succes: false,
+          success: false,
           message: err.message,
         });
       }
@@ -52,27 +53,17 @@ export async function createFolder(req: Request, res: Response) {
 
 export async function getFolders(req: Request, res: Response) {
   FolderSchema.find({
-    userId: req.body.userId,
+    userId: req.query.userId,
   })
     .then((folders) => {
-      const groupedFolder: { [key: string]: Array<IFolders> } = {};
-      folders.forEach((element) => {
-        const key = element.parentId ?? "Root";
-        if (groupedFolder[key] != null) {
-          groupedFolder[key].push(element);
-        } else {
-          groupedFolder[key] = [element];
-        }
-      });
-      const groupedFolders = Object.entries(groupedFolder);
       res.status(200).send({
-        succes: true,
-        groupedFolders,
+        success: true,
+        folders,
       });
     })
     .catch((err) => {
       res.status(500).send({
-        succes: false,
+        success: false,
         message: err || "Some error occured",
       });
     });

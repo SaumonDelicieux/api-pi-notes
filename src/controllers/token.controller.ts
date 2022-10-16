@@ -29,7 +29,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
             sendMail(nodemailer);
 
             res.status(200).send({
-              succes: true,
+              success: true,
               message: "Email sended",
               email: user!.email,
             });
@@ -63,7 +63,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
             sendMail(nodemailer);
 
             res.status(200).send({
-              succes: true,
+              success: true,
               message: "Email sended",
               email: user!.email,
             });
@@ -71,13 +71,13 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
       })
       .catch(() => {
         res.status(401).send({
-          succes: false,
+          success: false,
           message: "User not found",
         });
       });
   } else {
     res.status(400).send({
-      succes: false,
+      success: false,
       message: "Missing data",
     });
   }
@@ -92,26 +92,26 @@ export function verifyIfTokenExist(req: Request, res: Response): void {
         if (token) {
           if (token!.token === req.body.token) {
             res.status(200).send({
-              succes: true,
+              success: true,
               message: "Valid token",
             });
           }
         } else {
           res.status(401).send({
-            succes: false,
+            success: false,
             message: "Token expired or not valid",
           });
         }
       })
       .catch((err) => {
         res.status(401).send({
-          succes: false,
+          success: false,
           message: err.message,
         });
       });
   } else {
     res.status(400).send({
-      succes: false,
+      success: false,
       message: "Missing data",
     });
   }
@@ -133,7 +133,7 @@ export function resetPasswordAndDeleteToken(req: any, res: Response): void {
             TokenSchema.deleteOne({ userId: user!._id })
               .then(() => {
                 res.status(200).send({
-                  succes: true,
+                  success: true,
                   message: "Password has been changed",
                 });
               })
@@ -145,14 +145,14 @@ export function resetPasswordAndDeleteToken(req: any, res: Response): void {
           })
           .catch((err) => {
             res.status(401).send({
-              succes: false,
+              success: false,
               message: err.message,
             });
           });
       })
       .catch((err) => {
         res.status(401).send({
-          succes: false,
+          success: false,
           message: "Token not found",
         });
       });
