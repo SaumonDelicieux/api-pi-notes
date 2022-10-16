@@ -45,14 +45,14 @@ export async function register(req: Request, res: Response) {
       registerSucces(userSend);
 
       res.status(200).send({
-        succes: true,
+        success: true,
         token: userToken,
         message: "User has been added",
       });
     })
     .catch((err) => {
       res.status(500).send({
-        succes: false,
+        success: false,
         message: err.message || "Some error occured",
         email: req.body.email,
       });
@@ -67,7 +67,7 @@ export function login(req: Request, res: Response): void {
       .then((user) => {
         if (!bcrypt.compareSync(req.body.password, user?.password ?? "")) {
           res.status(401).send({
-            succes: false,
+            success: false,
             token: null,
             message: "Invalid password",
           });
@@ -87,19 +87,19 @@ export function login(req: Request, res: Response): void {
         );
 
         res.status(200).send({
-          succes: true,
+          success: true,
           token: userToken,
         });
       })
       .catch((err) => {
         res.status(404).send({
-          succes: false,
+          success: false,
           message: err.message || "Some error occured",
         });
       });
   } else {
     res.status(400).send({
-      succes: false,
+      success: false,
       message: "Missing data",
     });
   }
@@ -118,7 +118,7 @@ export async function getById(req: Request, res: Response) {
             phoneNumber: user.phoneNumber ?? "",
           };
           res.status(200).send({
-            succes: true,
+            success: true,
             message: "User Find",
             user: userDetail,
           });
@@ -126,13 +126,13 @@ export async function getById(req: Request, res: Response) {
       })
       .catch(() => {
         res.status(501).send({
-          succes: true,
+          success: true,
           message: "User not found",
         });
       });
   } else {
     res.status(400).send({
-      succes: false,
+      success: false,
       message: "Missing data ID",
     });
   }
