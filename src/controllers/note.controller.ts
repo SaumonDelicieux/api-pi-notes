@@ -18,6 +18,7 @@ export async function createNote(req: Request, res: Response) {
       res.status(200).send({
         success: true,
         message: `${note.title} has been added`,
+        note,
       });
     })
     .catch((err) => {
