@@ -66,11 +66,13 @@ export async function getFolders(req: Request, res: Response) {
       });
       const groupedFolders = Object.entries(groupedFolder);
       res.status(200).send({
+        succes: true,
         groupedFolders,
       });
     })
     .catch((err) => {
       res.status(500).send({
+        succes: false,
         message: err || "Some error occured",
       });
     });

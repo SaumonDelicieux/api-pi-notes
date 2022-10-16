@@ -30,28 +30,35 @@ export async function createNote(req: Request, res: Response) {
 }
 
 export async function getNotes(req: Request, res: Response) {
-  NoteSchema.find({ userId: req.body.userId })
-    .then((notes) => {
-      const groupedNotes: { [key: string]: Array<INote> } = {};
-      notes.forEach((element) => {
-        const key = element.userId ?? "Root";
-        if (groupedNotes[key] != null) {
-          groupedNotes[key].push(element);
-        } else {
-          groupedNotes[key] = [element];
-        }
+  if (req.body.userId) {
+    NoteSchema.find({ userId: req.body.userId })
+      .then((notes) => {
+        const groupedNotes: { [key: string]: Array<INote> } = {};
+        notes.forEach((element) => {
+          const key = element.userId ?? "Root";
+          if (groupedNotes[key] != null) {
+            groupedNotes[key].push(element);
+          } else {
+            groupedNotes[key] = [element];
+          }
+        });
+        res.status(200).send({
+          succes: true,
+          groupedNotes,
+        });
+      })
+      .catch((err) => {
+        res.status(500).send({
+          succes: false,
+          message: "Some error occured",
+        });
       });
-      res.status(200).send({
-        succes: true,
-        groupedNotes,
-      });
+  } else {
+    res.status(401).send({
+      succes: false,
+      message: "Missing data"
     })
-    .catch((err) => {
-      res.status(500).send({
-        succes: false,
-        message: "Some error occured",
-      });
-    });
+  }
 }
 
 export async function getNote(req: Request, res: Response) {
