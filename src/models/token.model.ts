@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { IToken } from "../types";
 
 const Schema = mongoose.Schema;
 
@@ -19,4 +20,4 @@ const tokenSchema = new Schema({
   },
 });
 
-export const TokenSchema = mongoose.model("Token", tokenSchema);
+export const TokenSchema = mongoose.model<IToken>("Token", tokenSchema);

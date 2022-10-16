@@ -45,13 +45,14 @@ export async function register(req: Request, res: Response) {
       registerSucces(userSend);
 
       res.status(200).send({
-        message: "User has been added",
         succes: true,
         token: userToken,
+        message: "User has been added",
       });
     })
     .catch((err) => {
       res.status(500).send({
+        succes: false,
         message: err.message || "Some error occured",
         email: req.body.email,
       });
@@ -66,11 +67,10 @@ export function login(req: Request, res: Response): void {
       .then((user) => {
         if (!bcrypt.compareSync(req.body.password, user?.password ?? "")) {
           res.status(401).send({
-            message: "Invalid password",
             succes: false,
             token: null,
+            message: "Invalid password",
           });
-          return false;
         }
 
         const userToken = jwt.sign(

@@ -7,6 +7,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 
+const randomstring = require("randomstring");
+
 export function sendEmailToResetPassword(req: Request, res: Response): void {
   if (req.body.identifer) {
     UserSchema.findOne({
@@ -27,6 +29,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
             sendMail(nodemailer);
 
             res.status(200).send({
+              succes: true,
               message: "Email sended",
               email: user!.email,
             });
@@ -34,8 +37,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
           .catch(() => {
             const userToken = jwt.sign(
               {
-                id: user!._id,
-                isPremium: user!.isPremium,
+                hash: randomstring.generate(100),
               },
               jwtSecret as string,
               {
@@ -61,6 +63,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
             sendMail(nodemailer);
 
             res.status(200).send({
+              succes: true,
               message: "Email sended",
               email: user!.email,
             });
@@ -68,11 +71,13 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
       })
       .catch(() => {
         res.status(401).send({
+          succes: false,
           message: "User not found",
         });
       });
   } else {
     res.status(400).send({
+      succes: false,
       message: "Missing data",
     });
   }
@@ -87,68 +92,68 @@ export function verifyIfTokenExist(req: Request, res: Response): void {
         if (token) {
           if (token!.token === req.body.token) {
             res.status(200).send({
-              auth: true,
+              succes: true,
               message: "Valid token",
             });
           }
         } else {
           res.status(401).send({
-            auth: false,
+            succes: false,
             message: "Token expired or not valid",
           });
         }
       })
       .catch((err) => {
         res.status(401).send({
-          auth: false,
+          succes: false,
           message: err.message,
         });
       });
   } else {
     res.status(400).send({
+      succes: false,
       message: "Missing data",
     });
   }
 }
 
 export function resetPasswordAndDeleteToken(req: any, res: Response): void {
-  if (req.data && req.body.password) {
+  if (req.headers["authorization"] && req.body.password) {
     const hashedPassword = bcrypt.hashSync(req.body.password, 10);
+    const tokenUser = req.headers["authorization"];
 
-    UserSchema.findByIdAndUpdate(
-      { _id: req.data.id },
-      { password: hashedPassword },
-      { new: true }
-    )
-      .then((user) => {
-        if (user) {
-          user.password = hashedPassword;
-          user.lastUpdateDate = new Date();
-          user
-            ?.save()
-            .then(() => {
-              TokenSchema.deleteOne({ userId: req.data.id })
-                .then(() => {
-                  res.status(200).send({
-                    message: "Password has been changed",
-                  });
-                })
-                .catch((err) => {
-                  res.status(500).json({
-                    err: err,
-                  });
+    TokenSchema.findOne({ token: tokenUser })
+      .then((token) => {
+        UserSchema.findByIdAndUpdate(
+          { _id: token!.userId },
+          { password: hashedPassword },
+          { new: true }
+        )
+          .then((user) => {
+            TokenSchema.deleteOne({ userId: user!._id })
+              .then(() => {
+                res.status(200).send({
+                  succes: true,
+                  message: "Password has been changed",
                 });
-            })
-            .catch((err) => {
-              res.status(401).send({
-                message: err,
+              })
+              .catch((err) => {
+                res.status(500).json({
+                  err: err,
+                });
               });
+          })
+          .catch((err) => {
+            res.status(401).send({
+              succes: false,
+              message: err.message,
             });
-        }
+          });
       })
-      .catch(() => {
+      .catch((err) => {
         res.status(401).send({
-          message: "User not found",
+          succes: false,
+          message: "Token not found",
         });
       });
   } else {
