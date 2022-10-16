@@ -16,6 +16,7 @@ export async function createFolder(req: Request, res: Response) {
       folder
         .save()
         .then((folder) => {
+          //await getFolders(user?._id);
           res.status(200).send({
             succes: true,
             message: `${folder.title} has been added`,
@@ -50,28 +51,55 @@ export async function createFolder(req: Request, res: Response) {
     });
 }
 
-export async function getFolders(req: Request, res: Response) {
-  FolderSchema.find({
-    userId: req.body.userId,
-  })
-    .then((folders) => {
-      const groupedFolder: { [key: string]: Array<IFolders> } = {};
-      folders.forEach((element) => {
-        const key = element.parentId ?? "Root";
-        if (groupedFolder[key] != null) {
-          groupedFolder[key].push(element);
-        } else {
-          groupedFolder[key] = [element];
-        }
-      });
-      const groupedFolders = Object.entries(groupedFolder);
-      res.status(200).send({
-        groupedFolders,
-      });
+export async function getFolders(
+  req?: Request,
+  res?: Response
+  // userId?: string
+) {
+  /*   if(userId){
+    FolderSchema.find({
+      userId: req.query.userId,
     })
-    .catch((err) => {
-      res.status(500).send({
-        message: err || "Some error occured",
+      .then((folders) => {return folders}
+  }else  */ if (res && req) {
+    FolderSchema.find({
+      userId: req.query.userId,
+    })
+      .then((folders) => {
+        const groupedFolder: { [key: string]: Array<IFolders> } = {};
+        folders.forEach((element) => {
+          orderFolders(element, groupedFolder);
+        });
+        const groupedFolders = Object.entries(groupedFolder);
+        res.status(200).send({
+          succes: true,
+          groupedFolders,
+        });
+        return groupedFolders;
+      })
+      .catch((err) => {
+        if (err.message.toString().includes("userId")) {
+          res.status(403).send({
+            succes: false,
+            message: "User no found",
+          });
+        }
+        res.status(500).send({
+          succes: false,
+          message: err || "Some error occured",
+        });
       });
-    });
+  }
+}
+
+async function orderFolders(
+  element: IFolders,
+  groupedFolder: { [key: string]: Array<IFolders> }
+) {
+  const key = element.parentId ?? "Root";
+  if (groupedFolder[key] != null) {
+    groupedFolder[key].push(element);
+  } else {
+    groupedFolder[key] = [element];
+  }
 }
