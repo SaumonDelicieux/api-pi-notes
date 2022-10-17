@@ -15,25 +15,23 @@ const noteSchema = new Schema({
     ref: "User",
     require: true,
   },
-
   title: {
     type: String,
     require: true,
   },
   text: {
     type: String,
-    required: true,
   },
   state: {
     type: String,
-    required: true,
-    enum: ["Publié", "Archivé", "Brouillant"],
+    enum: ["public", "archived", "junk"],
+    default: "junk",
   },
   creationDate: {
-    type: String,
+    type: Date,
   },
   lastUpdateDate: {
-    type: String,
+    type: Date,
   },
 });
 

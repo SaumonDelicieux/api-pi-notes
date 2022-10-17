@@ -6,8 +6,6 @@ export async function createNote(req: Request, res: Response) {
     folderId: req.body.folderId,
     userId: req.body.userId,
     title: req.body.title,
-    text: req.body.text,
-    state: "Brouillant",
     creationDate: new Date(),
     lastUpdateDate: new Date(),
   });
@@ -73,5 +71,29 @@ export async function getNote(req: Request, res: Response) {
           message: err.message,
         });
       }
+    });
+}
+
+export async function deleteNote(req: Request, res: Response) {
+  const noteId = req.query.noteId;
+
+  NoteSchema.findByIdAndRemove(noteId)
+    .then((data) => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete note with id=${noteId}. Maybe this note was not found !`,
+        });
+      } else {
+        res.status(200).send({
+          success: true,
+          message: "Note was deleted successfully!",
+          noteId,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Could not delete note with id=" + noteId,
+      });
     });
 }
