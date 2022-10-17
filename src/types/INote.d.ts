@@ -1,4 +1,4 @@
-export interface INote extends mongoose.Document {
+export interface INote {
   folderId: string;
   userId: string;
   title: string;
