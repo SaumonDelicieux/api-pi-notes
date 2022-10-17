@@ -1,9 +1,9 @@
 import { transporter } from "../configs/index.config";
-import { IMailOptions, IUser } from "../types";
+import { IMailOptions, IUserDetail } from "../types";
 import fs from "fs";
 import path from "path";
 
-export async function registerSucces(user: IUser) {
+export async function registerSucces(user: IUserDetail) {
   let htmltosend = getTemplate("welcom");
   const reg = new RegExp("(__customer__)", "g");
 

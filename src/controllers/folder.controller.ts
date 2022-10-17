@@ -1,11 +1,11 @@
 import { FolderSchema, UserSchema } from "../models";
 import { Request, Response } from "express";
-import { IFolders } from "../types";
+import { IFolders, IUser } from "../types";
 
 export async function createFolder(req: Request, res: Response) {
   UserSchema.findById(req.body.userId)
-    .then((user) => {
-      const folder = new FolderSchema({
+    .then((user: IUser | null) => {
+      const folder: IFolders = new FolderSchema({
         title: req.body.title,
         userId: req.body.userId,
         parentId: req.body.parentId,
@@ -15,7 +15,7 @@ export async function createFolder(req: Request, res: Response) {
 
       folder
         .save()
-        .then((folder) => {
+        .then((folder: IFolders) => {
           res.status(200).send({
             success: true,
             message: `${folder.title} has been added`,
@@ -55,7 +55,7 @@ export async function getFolders(req: Request, res: Response) {
   FolderSchema.find({
     userId: req.query.userId,
   })
-    .then((folders) => {
+    .then((folders: IFolders[]) => {
       res.status(200).send({
         success: true,
         folders,
@@ -73,7 +73,7 @@ export async function deleteFolder(req: Request, res: Response) {
   const folderId = req.query.folderId;
 
   FolderSchema.findByIdAndRemove(folderId)
-    .then((data) => {
+    .then((data: IFolders | null) => {
       if (!data) {
         res.status(404).send({
           message: `Cannot delete note with id=${folderId}. Maybe this note was not found !`,

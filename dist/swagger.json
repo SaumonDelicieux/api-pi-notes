@@ -1,0 +1,593 @@
+{
+    "swagger": "2.0.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "PI'notes",
+        "description": "CRUD of PI'notes app",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "host": "localhost:3001",
+    "basePath": "",
+    "tags": [
+        {
+            "name": "PI'notes",
+            "description": "CRUD of PI'notes app"
+        }
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/api/v1/notes/getAll?userId={id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of the user",
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Get all notes created by an user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Notes/getAllResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/notes/getById?id={id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of the note",
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Get note by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Notes/getByIdResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/notes/createNote": {
+            "post": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Create a new note in system",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "Note that we want create",
+                        "type": "string",
+                        "schema": {
+                            "$ref": "#/definitions/Note"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Notes/createNoteResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/folders/getAll?userId={id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of the user",
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "tags": [
+                    "Folders"
+                ],
+                "summary": "Get all folders created by an user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Folders/getAllResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/folders/createFolder": {
+            "post": {
+                "tags": [
+                    "Folders"
+                ],
+                "summary": "Create a new folder in system",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "Folder that we want create",
+                        "type": "string",
+                        "schema": {
+                            "$ref": "#/components/Folders/createFolderResponse"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Folders/createFolderResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/register": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Create a new user in system",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "User that we want create",
+                        "type": "string",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Users/registerResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/login": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "User login",
+                        "type": "string",
+                        "schema": {
+                            "$ref": "#/components/Users/loginRequest"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Users/loginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/sendEmailToResetPassword": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Send email to user",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "Identifer",
+                        "type": "string",
+                        "schema": {
+                            "$ref": "#/components/Users/sendEmailRequest"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Users/sendEmailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/checkToken": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Check token if valid",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "token",
+                        "type": "string",
+                        "schema": {
+                            "$ref": "#/components/Users/checkTokenRequest"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Users/checkTokenResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/updatePassword": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update password",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "password information",
+                        "type": "string",
+                        "schema": {
+                            "type": "string",
+                            "required": true
+                        }
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "password information",
+                        "type": "string",
+                        "schema": {
+                            "$ref": "#/components/Users/updatePasswordRequest"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Users/updatePasswordResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/getById?id={id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of the user",
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get user by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Users/getByIdResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "User": {
+            "type": "object",
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "isPremium": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "Folder": {
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "parentId": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
+        "Note": {
+            "type": "object",
+            "properties": {
+                "folderId": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "components": {
+        "Users": {
+            "loginRequest": {
+                "type": "object",
+                "properties": {
+                    "identifer": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "sendEmailRequest": {
+                "type": "object",
+                "properties": {
+                    "identifer": {
+                        "type": "string"
+                    }
+                }
+            },
+            "checkTokenRequest": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    }
+                }
+            },
+            "updatePasswordRequest": {
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "registerResponse": {
+                "type": "object",
+                "properties": {
+                    "succes": {
+                        "type": "boolean"
+                    },
+                    "token": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "loginResponse": {
+                "type": "object",
+                "properties": {
+                    "succes": {
+                        "type": "boolean"
+                    },
+                    "token": {
+                        "type": "string"
+                    }
+                }
+            },
+            "sendEmailResponse": {
+                "type": "object",
+                "properties": {
+                    "succes": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                }
+            },
+            "checkTokenResponse": {
+                "type": "object",
+                "properties": {
+                    "succes": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "updatePasswordResponse": {
+                "type": "object",
+                "properties": {
+                    "succes": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "getByIdResponse": {
+                "type": "object",
+                "properties": {
+                    "succes": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "type": "object"
+                    }
+                }
+            }
+        },
+        "Notes": {
+            "getAllResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "notes": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "getByIdResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "notes": {
+                        "type": "object"
+                    }
+                }
+            },
+            "createNoteResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "notes": {
+                        "type": "object"
+                    }
+                }
+            }
+        },
+        "Folders": {
+            "getAllResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "folders": {
+                        "type": "object"
+                    }
+                }
+            },
+            "createFolderResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}
