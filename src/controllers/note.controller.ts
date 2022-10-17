@@ -6,6 +6,7 @@ export async function createNote(req: Request, res: Response) {
     folderId: req.body.folderId,
     userId: req.body.userId,
     title: req.body.title,
+    state: req.body.state ?? "junk",
     creationDate: new Date(),
     lastUpdateDate: new Date(),
   });
