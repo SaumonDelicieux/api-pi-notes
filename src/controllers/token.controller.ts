@@ -1,6 +1,6 @@
 import { TokenSchema } from "../models/token.model";
 import { UserSchema } from "../models/user.model";
-import { IMailOptions } from "../types";
+import { IMailOptions, IToken, IUser } from "../types";
 import { sendMail } from "../utils/email";
 import { jwtSecret, urlFront } from "../configs/index.config";
 import bcrypt from "bcrypt";
@@ -13,24 +13,22 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
     UserSchema.findOne({
       $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
     })
-      .then((user) => {
+      .then((user: IUser | null) => {
         TokenSchema.findOne({
-          userId: user!._id,
+          userId: user?._id,
         })
           .then((token) => {
             const nodemailer: IMailOptions = {
               to: user!.email,
               subject: "Reset password | PI'notes",
-              html: `<p>${urlFront}/api/v1/users/tokenCheck?token=${
-                token!.token
-              }</p>`,
+              html: `<p>${urlFront}/api/v1/users/tokenCheck?token=${token?.token}</p>`,
             };
             sendMail(nodemailer);
 
             res.status(200).send({
               success: true,
               message: "Email sended",
-              email: user!.email,
+              email: user?.email,
             });
           })
           .catch(() => {
@@ -44,8 +42,8 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
               }
             );
 
-            const token = new TokenSchema({
-              userId: user!._id,
+            const token: IToken = new TokenSchema({
+              userId: user?._id,
               token: userToken,
             });
 
@@ -54,9 +52,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
             const nodemailer: IMailOptions = {
               to: user!.email,
               subject: "Reset password | PI'notes",
-              html: `<p>http://localhost:3001/api/v1/users/tokenCheck?token=${
-                token!.token
-              }</p>`,
+              html: `<p>http://localhost:3001/api/v1/users/tokenCheck?token=${token?.token}</p>`,
             };
 
             sendMail(nodemailer);
@@ -64,7 +60,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
             res.status(200).send({
               success: true,
               message: "Email sended",
-              email: user!.email,
+              email: user?.email,
             });
           });
       })
@@ -87,9 +83,9 @@ export function verifyIfTokenExist(req: Request, res: Response): void {
     TokenSchema.findOne({
       token: req.body.token,
     })
-      .then((token) => {
+      .then((token: IToken | null) => {
         if (token) {
-          if (token!.token === req.body.token) {
+          if (token.token === req.body.token) {
             res.status(200).send({
               success: true,
               message: "Valid token",
@@ -118,18 +114,18 @@ export function verifyIfTokenExist(req: Request, res: Response): void {
 
 export function resetPasswordAndDeleteToken(req: any, res: Response): void {
   if (req.headers["authorization"] && req.body.password) {
-    const hashedPassword = bcrypt.hashSync(req.body.password, 10);
+    const hashedPassword: string = bcrypt.hashSync(req.body.password, 10);
     const tokenUser = req.headers["authorization"];
 
     TokenSchema.findOne({ token: tokenUser })
-      .then((token) => {
+      .then((token: IToken | null) => {
         UserSchema.findByIdAndUpdate(
-          { _id: token!.userId },
+          { _id: token?.userId },
           { password: hashedPassword },
           { new: true }
         )
-          .then((user) => {
-            TokenSchema.deleteOne({ userId: user!._id })
+          .then((user: IUser | null) => {
+            TokenSchema.deleteOne({ userId: user?._id })
               .then(() => {
                 res.status(200).send({
                   success: true,
@@ -150,7 +146,7 @@ export function resetPasswordAndDeleteToken(req: any, res: Response): void {
             });
           });
       })
-      .catch((err) => {
+      .catch(() => {
         res.status(401).send({
           success: false,
           message: "Token not found",

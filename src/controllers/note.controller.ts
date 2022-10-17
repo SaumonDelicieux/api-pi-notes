@@ -1,8 +1,9 @@
 import { NoteSchema } from "../models";
 import { Request, Response } from "express";
+import { INote } from "../types";
 
 export async function createNote(req: Request, res: Response) {
-  const note = new NoteSchema({
+  const note: INote = new NoteSchema({
     folderId: req.body.folderId,
     userId: req.body.userId,
     title: req.body.title,
@@ -12,7 +13,7 @@ export async function createNote(req: Request, res: Response) {
 
   note
     .save()
-    .then((note) => {
+    .then((note: INote) => {
       res.status(200).send({
         success: true,
         message: `${note.title} has been added`,
@@ -30,7 +31,7 @@ export async function createNote(req: Request, res: Response) {
 export async function getNotes(req: Request, res: Response) {
   if (req.query.userId) {
     NoteSchema.find({ userId: req.query.userId })
-      .then((notes) => {
+      .then((notes: INote[]) => {
         res.status(200).send({
           success: true,
           notes,
@@ -52,7 +53,7 @@ export async function getNotes(req: Request, res: Response) {
 
 export async function getNote(req: Request, res: Response) {
   NoteSchema.findById(req.query.id)
-    .then((note) => {
+    .then((note: INote | null) => {
       res.status(200).send({
         success: true,
         note,
@@ -78,7 +79,7 @@ export async function deleteNote(req: Request, res: Response) {
   const noteId = req.query.noteId;
 
   NoteSchema.findByIdAndRemove(noteId)
-    .then((data) => {
+    .then((data: INote | null) => {
       if (!data) {
         res.status(404).send({
           message: `Cannot delete note with id=${noteId}. Maybe this note was not found !`,
