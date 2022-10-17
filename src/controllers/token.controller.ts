@@ -6,8 +6,7 @@ import { jwtSecret, urlFront } from "../configs/index.config";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
-
-const randomstring = require("randomstring");
+import randomstring from "randomstring";
 
 export function sendEmailToResetPassword(req: Request, res: Response): void {
   if (req.body.identifer) {

@@ -1,9 +1,9 @@
-export interface IUser extends mongoose.Document {
+export interface IUser {
   firstName?: string;
   lastName?: string;
   email: string;
   password?: string;
-  phoneNumber: string;
+  phoneNumber?: string;
   isPremium?: boolean;
   creationDate?: Date;
   lastUpdateDate?: Date;
