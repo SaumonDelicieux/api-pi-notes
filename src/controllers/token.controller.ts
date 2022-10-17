@@ -6,8 +6,7 @@ import { jwtSecret, urlFront } from "../configs/index.config";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
-
-const randomstring = require("randomstring");
+import randomString from "randomstring";
 
 export function sendEmailToResetPassword(req: Request, res: Response): void {
   if (req.body.identifer) {
@@ -37,7 +36,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
           .catch(() => {
             const userToken = jwt.sign(
               {
-                hash: randomstring.generate(100),
+                hash: randomString.generate(100),
               },
               jwtSecret as string,
               {
