@@ -32,10 +32,10 @@ const userSchema = new Schema({
     required: true,
   },
   creationDate: {
-    type: Date,
+    type: String,
   },
   lastUpdateDate: {
-    type: Date,
+    type: String,
   },
 });
 

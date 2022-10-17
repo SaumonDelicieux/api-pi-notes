@@ -106,8 +106,8 @@ export function login(req: Request, res: Response): void {
 }
 
 export async function getById(req: Request, res: Response) {
-  if (req.body.id) {
-    UserSchema.findById(req.body.id)
+  if (req.query.id) {
+    UserSchema.findById(req.query.id)
       .then((user) => {
         if (user) {
           const userDetail: IUser = {
