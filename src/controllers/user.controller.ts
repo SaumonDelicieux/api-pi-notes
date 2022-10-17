@@ -1,39 +1,34 @@
-import { UserSchema } from "../models/user.model";
+import { UserSchema } from "../models";
 import { Request, Response } from "express";
 import { jwtSecret } from "../configs/index.config";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { IUser } from "../types";
+import { IUser, IUserDetail } from "../types";
 import { registerSucces } from "../utils/email";
 
 export async function register(req: Request, res: Response) {
   const hashedPassword = bcrypt.hashSync(req.body.password, 10);
 
-  const user = new UserSchema({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
+  const user: IUser = new UserSchema({
+    firstName: req.body.firstName ?? "",
+    lastName: req.body.lastName ?? "",
     email: req.body.email,
     password: hashedPassword,
-    phoneNumber: req.body.phoneNumber,
+    phoneNumber: req.body.phoneNumber ?? "",
     isPremium: false,
-    dateOfInscription: new Date(),
+    creationDate: new Date(),
     lastUpdateDate: new Date(),
   });
-  const a = await UserSchema.findOne({
-    $or: [{ email: req.body.email }, { phoneNumber: req.body.phoneNumber }],
-  });
-  if (a) {
-    res.status(409).send({ message: "User alerdy exist" });
-    return false;
-  }
+
   user
     .save()
-    .then((user) => {
+    .then((user: IUser) => {
       const userToken = jwt.sign(
         {
           id: user._id,
-          password: user.password,
-          subscription: user.isPremium,
+          isPremium: user.isPremium,
+          firstName: user.firstName,
+          lastName: user.lastName,
         },
         jwtSecret as string,
         {
@@ -42,7 +37,7 @@ export async function register(req: Request, res: Response) {
         }
       );
 
-      const userSend: IUser = {
+      const userSend: IUserDetail = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
@@ -51,13 +46,14 @@ export async function register(req: Request, res: Response) {
       registerSucces(userSend);
 
       res.status(200).send({
-        message: "User has been added",
-        auth: true,
+        success: true,
         token: userToken,
+        message: "User has been added",
       });
     })
     .catch((err) => {
       res.status(500).send({
+        success: false,
         message: err.message || "Some error occured",
         email: req.body.email,
       });
@@ -70,19 +66,20 @@ export function login(req: Request, res: Response): void {
       $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
     })
       .then((user) => {
-        if (!bcrypt.compareSync(req.body.password, user!.password)) {
+        if (!bcrypt.compareSync(req.body.password, user?.password ?? "")) {
           res.status(401).send({
-            message: "Invalid password",
-            auth: false,
+            success: false,
             token: null,
+            message: "Invalid password",
           });
-          return false;
         }
 
         const userToken = jwt.sign(
           {
             id: user!._id,
-            isPremium: user!.isPremium,
+            isPremium: user?.isPremium,
+            firstName: user?.firstName,
+            lastName: user?.lastName,
           },
           jwtSecret as string,
           {
@@ -91,20 +88,53 @@ export function login(req: Request, res: Response): void {
         );
 
         res.status(200).send({
-          auth: true,
+          success: true,
           token: userToken,
         });
       })
-      .catch(() => {
+      .catch((err) => {
         res.status(404).send({
-          auth: false,
-          message: "Identifier not valid",
+          success: false,
+          message: err.message || "Some error occured",
         });
       });
   } else {
     res.status(400).send({
-      auth: false,
+      success: false,
       message: "Missing data",
+    });
+  }
+}
+
+export async function getById(req: Request, res: Response) {
+  if (req.query.id) {
+    UserSchema.findById(req.query.id)
+      .then((user) => {
+        if (user) {
+          const userDetail: IUserDetail = {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            isPremium: user.isPremium,
+            phoneNumber: user.phoneNumber ?? "",
+          };
+          res.status(200).send({
+            success: true,
+            message: "User Find",
+            user: userDetail,
+          });
+        }
+      })
+      .catch(() => {
+        res.status(501).send({
+          success: true,
+          message: "User not found",
+        });
+      });
+  } else {
+    res.status(400).send({
+      success: false,
+      message: "Missing data ID",
     });
   }
 }

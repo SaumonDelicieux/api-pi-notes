@@ -1,11 +1,12 @@
 import { transporter } from "../configs/index.config";
-import { IMailOptions, IUser } from "../types";
+import { IMailOptions, IUserDetail } from "../types";
 import fs from "fs";
 import path from "path";
 
-export async function registerSucces(user: IUser) {
+export async function registerSucces(user: IUserDetail) {
   let htmltosend = getTemplate("welcom");
   const reg = new RegExp("(__customer__)", "g");
+
   htmltosend = htmltosend.replace(reg, `${user.firstName} ${user.lastName}`);
   const nodemailer: IMailOptions = {
     to: user.email,
@@ -14,6 +15,7 @@ export async function registerSucces(user: IUser) {
   };
   sendMail(nodemailer);
 }
+
 const getTemplate = (type = "basic") => {
   return fs.readFileSync(
     path.join(__dirname, "../emails/template/", `template-${type}.html`),
@@ -23,7 +25,8 @@ const getTemplate = (type = "basic") => {
 
 export async function sendMail(mailOptions: IMailOptions) {
   const mailOption: IMailOptions = {
-    from: "no-replay@gmail.com",
+    from: "Pi'note teams <noreply.pi-note@gmail.com>",
+    replyTo: "noreply.pi-note@gmail.com",
     to: mailOptions.to,
     subject: mailOptions.subject,
     text: mailOptions.text,

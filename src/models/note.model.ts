@@ -1,27 +1,38 @@
 import mongoose from "mongoose";
+import { INote } from "../types";
 
 const Schema = mongoose.Schema;
 
 const noteSchema = new Schema({
+  folderId: {
+    type: Schema.Types.ObjectId,
+    ref: "Folder",
+    require: true,
+  },
+
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    require: true,
+  },
   title: {
     type: String,
     require: true,
   },
   text: {
     type: String,
-    required: true,
   },
   state: {
     type: String,
-    required: true,
-    unique: true,
+    enum: ["public", "archived", "junk"],
+    default: "junk",
   },
   creationDate: {
-    type: String,
+    type: Date,
   },
   lastUpdateDate: {
-    type: String,
+    type: Date,
   },
 });
 
-export const NoteSchema = mongoose.model("Note", noteSchema);
+export const NoteSchema = mongoose.model<INote>("Note", noteSchema);

@@ -1,16 +1,17 @@
 import mongoose from "mongoose";
+import { IUser } from "../types";
 
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
   firstName: {
     type: String,
-    required: true,
+    required: false,
     lowercase: true,
   },
   lastName: {
     type: String,
-    required: true,
+    required: false,
     uppercase: true,
   },
   email: {
@@ -28,14 +29,14 @@ const userSchema = new Schema({
   },
   isPremium: {
     type: Boolean,
-    required: true,
+    default: false,
   },
-  dateOfInscription: {
-    type: String,
+  creationDate: {
+    type: Date,
   },
   lastUpdateDate: {
-    type: String,
+    type: Date,
   },
 });
 
-export const UserSchema = mongoose.model("User", userSchema);
+export const UserSchema = mongoose.model<IUser>("User", userSchema);

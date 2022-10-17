@@ -3,5 +3,6 @@ export interface IMailOptions {
   to: string;
   subject: string;
   text?: string;
-  html?: any;
+  html?: string;
+  replyTo?: string;
 }
