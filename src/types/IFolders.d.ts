@@ -1,4 +1,4 @@
-export interface IFolders extends mongoose.Document {
+export interface IFolders {
   id: string;
   title: string;
   parentId?: string;
