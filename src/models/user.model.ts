@@ -6,12 +6,9 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
   firstName: {
     type: String,
-    required: false,
-    lowercase: true,
   },
   lastName: {
     type: String,
-    required: false,
     uppercase: true,
   },
   email: {
@@ -25,11 +22,10 @@ const userSchema = new Schema({
   },
   phoneNumber: {
     type: String,
-    required: false,
   },
   isPremium: {
     type: Boolean,
-    required: true,
+    default: false,
   },
   creationDate: {
     type: Date,
