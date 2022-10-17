@@ -138,6 +138,7 @@ export function resetPasswordAndDeleteToken(req: any, res: Response): void {
               })
               .catch((err) => {
                 res.status(500).json({
+                  success: false,
                   err: err,
                 });
               });
@@ -157,6 +158,7 @@ export function resetPasswordAndDeleteToken(req: any, res: Response): void {
       });
   } else {
     res.status(401).send({
+      success: false,
       message: "Missing data",
     });
   }

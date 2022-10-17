@@ -19,10 +19,10 @@ const folderSchema = new Schema({
     require: true,
   },
   creationDate: {
-    type: String,
+    type: Date,
   },
   lastUpdateDate: {
-    type: String,
+    type: Date,
   },
 });
 

@@ -29,7 +29,7 @@ const userSchema = new Schema({
   },
   isPremium: {
     type: Boolean,
-    required: true,
+    default: false,
   },
   creationDate: {
     type: Date,

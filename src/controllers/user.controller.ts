@@ -10,15 +10,16 @@ export async function register(req: Request, res: Response) {
   const hashedPassword = bcrypt.hashSync(req.body.password, 10);
 
   const user = new UserSchema({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
+    firstName: req.body.firstName ?? "",
+    lastName: req.body.lastName ?? "",
     email: req.body.email,
     password: hashedPassword,
-    phoneNumber: req.body.phoneNumber,
+    phoneNumber: req.body.phoneNumber ?? "",
     isPremium: false,
     creationDate: new Date(),
     lastUpdateDate: new Date(),
   });
+  
   user
     .save()
     .then((user) => {
@@ -106,8 +107,8 @@ export function login(req: Request, res: Response): void {
 }
 
 export async function getById(req: Request, res: Response) {
-  if (req.body.id) {
-    UserSchema.findById(req.body.id)
+  if (req.query.id) {
+    UserSchema.findById(req.query.id)
       .then((user) => {
         if (user) {
           const userDetail: IUser = {
