@@ -3,13 +3,13 @@ import { Request, Response } from "express";
 import { jwtSecret } from "../configs/index.config";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { IUser } from "../types";
+import { IUser, IUserDetail } from "../types";
 import { registerSucces } from "../utils/email";
 
 export async function register(req: Request, res: Response) {
   const hashedPassword = bcrypt.hashSync(req.body.password, 10);
 
-  const user = new UserSchema({
+  const user: IUser = new UserSchema({
     firstName: req.body.firstName ?? "",
     lastName: req.body.lastName ?? "",
     email: req.body.email,
@@ -19,10 +19,10 @@ export async function register(req: Request, res: Response) {
     creationDate: new Date(),
     lastUpdateDate: new Date(),
   });
-  
+
   user
     .save()
-    .then((user) => {
+    .then((user: IUser) => {
       const userToken = jwt.sign(
         {
           id: user._id,
@@ -37,7 +37,7 @@ export async function register(req: Request, res: Response) {
         }
       );
 
-      const userSend: IUser = {
+      const userSend: IUserDetail = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
@@ -111,7 +111,7 @@ export async function getById(req: Request, res: Response) {
     UserSchema.findById(req.query.id)
       .then((user) => {
         if (user) {
-          const userDetail: IUser = {
+          const userDetail: IUserDetail = {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,

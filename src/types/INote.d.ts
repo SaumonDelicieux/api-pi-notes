@@ -1,4 +1,6 @@
-export interface INote {
+import mongoose from "mongoose";
+
+export interface INote extends mongoose.Document {
   folderId: string;
   userId: string;
   title: string;
