@@ -6,8 +6,8 @@
   "scripts": {
     "test": "mocha src/test/index.ts",
     "lint": "eslint . --fix",
-    "dev": "nodemon src/index.ts",
-    "start": "npm run build && ts-node src/index.ts",
+    "dev": "npm run build && nodemon src/index.ts",
+    "start": "npm run build && node dist/index.js",
     "build": "rimraf ./build && tsc"
   },
   "repository": {
