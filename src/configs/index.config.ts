@@ -6,14 +6,7 @@ export const swaggerPassword = process.env.SWAGGER_PASSWORD;
 import nodemailer from "nodemailer";
 import swagerdoc from "../swagger.json";
 
-let host: string | undefined = process.env.HOST_DEV;
-if (process.env.VITE_MODE === "staging") {
-  host = process.env.HOST_STAGE;
-} else if (process.env.VITE_MODE === "production") {
-  host = process.env.HOST_PROD;
-}
-
-swagerdoc.host = host ?? "";
+swagerdoc.host = process.env.HOST ?? "";
 
 let logger = false;
 if (process.env.VITE_MODE === "development") {
