@@ -7,7 +7,7 @@
     "test": "mocha src/test/index.ts",
     "lint": "eslint . --fix",
     "dev": "npm run build && nodemon src/index.ts",
-    "start": "node dist/index.js",
+    "start": "nnpm run build && ode dist/index.js",
     "build": "rimraf ./build && tsc"
   },
   "repository": {
