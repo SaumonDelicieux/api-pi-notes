@@ -2,8 +2,18 @@ export const port = process.env.PORT;
 export const db = process.env.DB_URI;
 export const jwtSecret = process.env.JWT_SECRET;
 export const urlFront = process.env.URL_FRONT;
-export const swaggerPassword = process.env.SWAGGER_PASSWORD
+export const swaggerPassword = process.env.SWAGGER_PASSWORD;
 import nodemailer from "nodemailer";
+import swagerdoc from "../swagger.json";
+
+let host: string | undefined = process.env.HOST_DEV;
+if (process.env.VITE_MODE === "staging") {
+  host = process.env.HOST_STAGE;
+} else if (process.env.VITE_MODE === "production") {
+  host = process.env.HOST_PROD;
+}
+
+swagerdoc.host = host ?? "";
 
 let logger = false;
 if (process.env.VITE_MODE === "development") {
