@@ -29,6 +29,7 @@ export async function register(req: Request, res: Response) {
           isPremium: user.isPremium,
           firstName: user.firstName,
           lastName: user.lastName,
+          email: user.email
         },
         jwtSecret as string,
         {
@@ -80,6 +81,7 @@ export function login(req: Request, res: Response): void {
             isPremium: user?.isPremium,
             firstName: user?.firstName,
             lastName: user?.lastName,
+            email: user?.email
           },
           jwtSecret as string,
           {
