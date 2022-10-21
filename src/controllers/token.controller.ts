@@ -18,50 +18,57 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
           userId: user?._id,
         })
           .then((token) => {
-            const nodemailer: IMailOptions = {
-              to: user!.email,
-              subject: "Reset password | PI'notes",
-              html: `<p>${urlFront}/api/v1/users/tokenCheck?token=${token?.token}</p>`,
-            };
-            sendMail(nodemailer);
+            if (token) {
+              const nodemailer: IMailOptions = {
+                to: user!.email,
+                subject: "Reset password | PI'notes",
+                html: `<p>${urlFront}/api/v1/users/tokenCheck?token=${token?.token}</p>`,
+              };
+              sendMail(nodemailer);
 
-            res.status(200).send({
-              success: true,
-              message: "Email sended",
-              email: user?.email,
-            });
+              res.status(200).send({
+                success: true,
+                message: "Email sended",
+                email: user?.email,
+              });
+            } else {
+              const userToken = jwt.sign(
+                {
+                  hash: randomString.generate(100),
+                },
+                jwtSecret as string,
+                {
+                  expiresIn: 86400,
+                }
+              );
+
+              const token: IToken = new TokenSchema({
+                userId: user?._id,
+                token: userToken,
+              });
+
+              token.save();
+
+              const nodemailer: IMailOptions = {
+                to: user!.email,
+                subject: "Reset password | PI'notes",
+                html: `<p>http://localhost:3001/api/v1/users/tokenCheck?token=${token?.token}</p>`,
+              };
+
+              sendMail(nodemailer);
+
+              res.status(200).send({
+                success: true,
+                message: "Email sended",
+                email: user?.email,
+              });
+            }
           })
           .catch(() => {
-            const userToken = jwt.sign(
-              {
-                hash: randomString.generate(100),
-              },
-              jwtSecret as string,
-              {
-                expiresIn: 86400,
-              }
-            );
-
-            const token: IToken = new TokenSchema({
-              userId: user?._id,
-              token: userToken,
-            });
-
-            token.save();
-
-            const nodemailer: IMailOptions = {
-              to: user!.email,
-              subject: "Reset password | PI'notes",
-              html: `<p>http://localhost:3001/api/v1/users/tokenCheck?token=${token?.token}</p>`,
-            };
-
-            sendMail(nodemailer);
-
-            res.status(200).send({
-              success: true,
-              message: "Email sended",
-              email: user?.email,
-            });
+            res.status(401).send({
+              success: false,
+              message: "Server error"
+            })
           });
       })
       .catch(() => {
