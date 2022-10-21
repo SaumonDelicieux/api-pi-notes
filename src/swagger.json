@@ -105,6 +105,65 @@
                 }
             }
         },
+        "/api/v1/notes/updateNote" : {
+            "put": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Update a note in system",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "Note that we want update",
+                        "type": "string",
+                        "schema": {
+                            "$ref": "#/components/Notes/updateNoteRequest"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Notes/updateNoteResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/notes/deleteNote?noteId={id}" : {
+            "delete": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Delete a note in system",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the note",
+                        "type": "string"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Notes/deleteNoteResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/folders/getAll?userId={id}": {
             "parameters": [
                 {
@@ -156,6 +215,65 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/components/Folders/createFolderResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/folders/updateFolderTitle" : {
+            "put": {
+                "tags": [
+                    "Folders"
+                ],
+                "summary": "Update title of an folder in system",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "Folder that we want update",
+                        "type": "string",
+                        "schema": {
+                            "$ref": "#/components/Folders/updateFolderTitleRequest"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Folders/updateFolderTitleResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/folders/deleteFolder?folderId={id}" : {
+            "delete": {
+                "tags": [
+                    "Folders"
+                ],
+                "summary": "Delete a folder in system",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the folder",
+                        "type": "string"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Folders/deleteFolderResponse"
                         }
                     }
                 }
@@ -526,6 +644,23 @@
             }
         },
         "Notes": {
+            "updateNoteRequest": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "text": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    }
+                }
+            },
             "getAllResponse": {
                 "type": "object",
                 "properties": {
@@ -564,9 +699,48 @@
                         "type": "object"
                     }
                 }
+            },
+            "deleteNoteResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "noteId": {
+                        "type": "string"
+                    }
+                }
+            },
+            "updateNoteResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "object"
+                    }
+                }
             }
         },
         "Folders": {
+            "updateFolderTitleRequest": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            },
             "getAllResponse": {
                 "type": "object",
                 "properties": {
@@ -586,6 +760,34 @@
                     },
                     "message": {
                         "type": "string"
+                    }
+                }
+            },
+            "deleteFolderResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "folderId": {
+                        "type": "string"
+                    }
+                }
+            },
+            "updateFolderTitleResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "folder": {
+                        "type": "object"
                     }
                 }
             }

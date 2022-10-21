@@ -75,6 +75,23 @@ export async function getNote(req: Request, res: Response) {
     });
 }
 
+export async function updateNote(req: Request, res: Response) {
+  NoteSchema.findByIdAndUpdate(req.body.id, { $set: req.body }, { new: true })
+    .then((note) => {
+      res.status(200).send({
+        seccuss: true,
+        message: "The note has been updated",
+        note,
+      });
+    })
+    .catch((err) => {
+      res.status(401).send({
+        success: false,
+        message: `Error : ${err}`,
+      });
+    });
+}
+
 export async function deleteNote(req: Request, res: Response) {
   const noteId = req.query.noteId;
 

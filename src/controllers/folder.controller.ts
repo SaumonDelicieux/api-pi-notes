@@ -69,6 +69,23 @@ export async function getFolders(req: Request, res: Response) {
     });
 }
 
+export async function updateFolderTitle(req: Request, res: Response) {
+  FolderSchema.findByIdAndUpdate(req.body.id, { title: req.body.title }, { new: true })
+    .then((folder) => {
+      res.status(200).send({
+        seccuss: true,
+        message: "The folder has been updated",
+        folder,
+      });
+    })
+    .catch((err) => {
+      res.status(401).send({
+        success: false,
+        message: `Error : ${err}`,
+      });
+    });
+}
+
 export async function deleteFolder(req: Request, res: Response) {
   const folderId = req.query.folderId;
 
