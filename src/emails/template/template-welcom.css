@@ -1,0 +1,54 @@
+#header {
+  height: 100px;
+  background: #1e3a8a;
+  width: 1420px;
+  border-color: #cbd5e1;
+  border-style: double;
+  border-radius: 10px;
+  border-style: none;
+}
+
+img {
+  width: 80px;
+  height: 80px;
+  position: absolute;
+  box-sizing: content-box;
+  border-color: #cbd5e1;
+  float: left;
+  padding: 9px;
+}
+
+h1 {
+  text-align: center;
+  padding-left: 50px;
+  color: #cbd5e1;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 5px;
+  float: right;
+
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 29px;
+
+  justify-content: center;
+  padding: 15px;
+}
+
+p {
+  position: relative;
+  padding: 150px;
+}
+
+#basDePage {
+  height: 45px;
+  background: #1e3a8a;
+  width: 1420px;
+  border-color: #cbd5e1;
+  border-style: double;
+  border-radius: 10px;
+  border-style: none;
+  padding-bottom: 55px;
+}
