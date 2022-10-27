@@ -90,11 +90,18 @@ export function verifyIfTokenExist(req: Request, res: Response): void {
       token: req.body.token,
     })
       .then((token) => {
-        res.status(200).send({
-          success: true,
-          message: "Valid token",
-          token
-        });
+        if (token) {
+          res.status(200).send({
+            success: true,
+            message: "Valid token",
+          });
+        } else {
+          res.status(401).send({
+            success: false,
+            message: "Invalid token",
+          });
+        }
+        
       })
       .catch((err) => {
         res.status(401).send({
