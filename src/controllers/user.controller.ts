@@ -68,7 +68,7 @@ export function login(req: Request, res: Response): void {
     })
       .then((user) => {
         if (user) {
-          if (!bcrypt.compareSync(req.body.password, user?.password ?? "")) {
+          if (!bcrypt.compareSync(req.body.password, user.password as string)) {
             res.status(401).send({
               success: false,
               token: null,
@@ -77,11 +77,11 @@ export function login(req: Request, res: Response): void {
           } else {
             const userToken = jwt.sign(
               {
-                id: user!._id,
-                isPremium: user?.isPremium,
-                firstName: user?.firstName,
-                lastName: user?.lastName,
-                email: user?.email,
+                id: user._id,
+                isPremium: user.isPremium,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
               },
               jwtSecret as string,
               {
