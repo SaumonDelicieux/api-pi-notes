@@ -1,3 +1,4 @@
+import { UserSchema } from "./../models/user.model";
 import { NoteSchema } from "../models";
 import { Request, Response } from "express";
 import { INote } from "../types";
@@ -112,6 +113,39 @@ export async function deleteNote(req: Request, res: Response) {
     .catch((err) => {
       res.status(500).send({
         message: "Could not delete note with id=" + noteId,
+      });
+    });
+}
+
+export async function getEmailToShare(req: Request, res: Response) {
+  const search = req.headers.search;
+  const regSearch = new RegExp(search as string, "i");
+  const emails: string[] = [];
+
+  UserSchema.find({
+    $or: [{ firstName: regSearch }, { lastName: regSearch }, { email: regSearch }],
+  })
+    .then((users) => {
+      users.forEach((user) => {
+        emails.push(user.email);
+      });
+
+      if (emails.length > 0) {
+        res.status(200).send({
+          success: true,
+          emails,
+        });
+      } else {
+        res.status(401).send({
+          success: false,
+          message: "Users not founded",
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(401).send({
+        success: false,
+        message: err,
       });
     });
 }

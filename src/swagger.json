@@ -96,6 +96,46 @@
                 }
             }
         },
+        "/api/v1/notes/getEmailsToShare": {
+            "parameters": [
+                {
+                    "name": "authorization",
+                    "in": "header",
+                    "required": true,
+                    "description": "User token",
+                    "type": "string",
+                    "schema": {
+                        "type": "string",
+                        "required": true
+                    }
+                },
+                {
+                    "name": "search",
+                    "in": "header",
+                    "required": true,
+                    "description": "String to search",
+                    "type": "string",
+                    "schema": {
+                        "type": "string",
+                        "required": true
+                    }
+                }
+            ],
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Get note by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Notes/getByIdResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/notes/createNote" : {
             "post": {
                 "tags": [
@@ -847,6 +887,17 @@
                     },
                     "notes": {
                         "type": "object"
+                    }
+                }
+            },
+            "getEmailsToShareResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "emails": {
+                        "type": "array"
                     }
                 }
             },
