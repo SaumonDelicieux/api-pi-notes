@@ -147,3 +147,27 @@ export async function getById(req: Request, res: Response) {
     });
   }
 }
+
+export async function updateProfile(req: any, res: Response) {
+  if(req.data.id) {
+    UserSchema.findByIdAndUpdate(req.data.id, req.body, {new: true})
+    .then((user) => {
+      res.status(200).send({
+        success: true,
+        user
+      })
+    })
+    .catch((err) => {
+      res.status(401).send({
+        success: false,
+        message: err
+      })
+    }
+    )
+  } else {
+    res.status(401).send({
+      success: false,
+      message: "Missing data"
+    })
+  }
+}
