@@ -1,5 +1,4 @@
-import { UserSchema } from "./../models/user.model";
-import { NoteSchema } from "../models";
+import { NoteSchema, UserSchema } from "../models";
 import { Request, Response } from "express";
 import { INote } from "../types";
 
