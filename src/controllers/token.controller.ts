@@ -1,5 +1,4 @@
-import { TokenSchema } from "../models/token.model";
-import { UserSchema } from "../models/user.model";
+import { TokenSchema, UserSchema } from "../models";
 import { IMailOptions, IToken, IUser } from "../types";
 import { sendMail } from "../utils/email";
 import { jwtSecret, urlFront } from "../configs/index.config";
@@ -13,7 +12,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
     UserSchema.findOne({
       $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
     })
-      .then((user: IUser | null) => {
+      .then((user) => {
         TokenSchema.findOne({
           userId: user?._id,
         })
@@ -22,7 +21,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
               const nodemailer: IMailOptions = {
                 to: user!.email,
                 subject: "Reset password | PI'notes",
-                html: `<p>${urlFront}/api/v1/users/tokenCheck?token=${token?.token}</p>`,
+                html: `<p>${urlFront}updatePassword?token=${token?.token}</p>`,
               };
               sendMail(nodemailer);
 
@@ -52,7 +51,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
               const nodemailer: IMailOptions = {
                 to: user!.email,
                 subject: "Reset password | PI'notes",
-                html: `<p>http://localhost:3001/api/v1/users/tokenCheck?token=${token?.token}</p>`,
+                html: `<p>${urlFront}updatePassword?token=${token?.token}</p>`,
               };
 
               sendMail(nodemailer);
@@ -67,8 +66,8 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
           .catch(() => {
             res.status(401).send({
               success: false,
-              message: "Server error"
-            })
+              message: "Server error",
+            });
           });
       })
       .catch(() => {
@@ -90,20 +89,12 @@ export function verifyIfTokenExist(req: Request, res: Response): void {
     TokenSchema.findOne({
       token: req.body.token,
     })
-      .then((token: IToken | null) => {
-        if (token) {
-          if (token.token === req.body.token) {
-            res.status(200).send({
-              success: true,
-              message: "Valid token",
-            });
-          }
-        } else {
-          res.status(401).send({
-            success: false,
-            message: "Token expired or not valid",
-          });
-        }
+      .then((token) => {
+        res.status(200).send({
+          success: true,
+          message: "Valid token",
+          token
+        });
       })
       .catch((err) => {
         res.status(401).send({

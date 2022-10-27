@@ -29,7 +29,7 @@ export async function register(req: Request, res: Response) {
           isPremium: user.isPremium,
           firstName: user.firstName,
           lastName: user.lastName,
-          email: user.email
+          email: user.email,
         },
         jwtSecret as string,
         {
@@ -67,32 +67,39 @@ export function login(req: Request, res: Response): void {
       $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
     })
       .then((user) => {
-        if (!bcrypt.compareSync(req.body.password, user?.password ?? "")) {
+        if (user) {
+          if (!bcrypt.compareSync(req.body.password, user?.password ?? "")) {
+            res.status(401).send({
+              success: false,
+              token: null,
+              message: "Invalid password",
+            });
+          } else {
+            const userToken = jwt.sign(
+              {
+                id: user!._id,
+                isPremium: user?.isPremium,
+                firstName: user?.firstName,
+                lastName: user?.lastName,
+                email: user?.email,
+              },
+              jwtSecret as string,
+              {
+                expiresIn: 86400,
+              }
+            );
+
+            res.status(200).send({
+              success: true,
+              token: userToken,
+            });
+          }
+        } else {
           res.status(401).send({
             success: false,
-            token: null,
-            message: "Invalid password",
+            message: "User not found",
           });
         }
-
-        const userToken = jwt.sign(
-          {
-            id: user!._id,
-            isPremium: user?.isPremium,
-            firstName: user?.firstName,
-            lastName: user?.lastName,
-            email: user?.email
-          },
-          jwtSecret as string,
-          {
-            expiresIn: 86400,
-          }
-        );
-
-        res.status(200).send({
-          success: true,
-          token: userToken,
-        });
       })
       .catch((err) => {
         res.status(404).send({
