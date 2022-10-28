@@ -27,6 +27,17 @@
         "/api/v1/notes/getAll?userId={id}": {
             "parameters": [
                 {
+                    "name": "authorization",
+                    "in": "header",
+                    "required": true,
+                    "description": "User token",
+                    "type": "string",
+                    "schema": {
+                        "type": "string",
+                        "required": true
+                    }
+                },
+                {
                     "name": "id",
                     "in": "path",
                     "required": true,
@@ -52,11 +63,62 @@
         "/api/v1/notes/getById?id={id}": {
             "parameters": [
                 {
+                    "name": "authorization",
+                    "in": "header",
+                    "required": true,
+                    "description": "User token",
+                    "type": "string",
+                    "schema": {
+                        "type": "string",
+                        "required": true
+                    }
+                },
+                {
                     "name": "id",
                     "in": "path",
                     "required": true,
                     "description": "ID of the note",
                     "type": "string"
+                }
+            ],
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Get note by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Notes/getByIdResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/notes/getEmailsToShare": {
+            "parameters": [
+                {
+                    "name": "authorization",
+                    "in": "header",
+                    "required": true,
+                    "description": "User token",
+                    "type": "string",
+                    "schema": {
+                        "type": "string",
+                        "required": true
+                    }
+                },
+                {
+                    "name": "search",
+                    "in": "header",
+                    "required": true,
+                    "description": "String to search",
+                    "type": "string",
+                    "schema": {
+                        "type": "string",
+                        "required": true
+                    }
                 }
             ],
             "get": {
@@ -81,6 +143,17 @@
                 ],
                 "summary": "Create a new note in system",
                 "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "User token",
+                        "type": "string",
+                        "schema": {
+                            "type": "string",
+                            "required": true
+                        }
+                    },
                     {
                         "name": "body",
                         "in": "body",
@@ -113,6 +186,17 @@
                 "summary": "Update a note in system",
                 "parameters": [
                     {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "User token",
+                        "type": "string",
+                        "schema": {
+                            "type": "string",
+                            "required": true
+                        }
+                    },
+                    {
                         "name": "body",
                         "in": "body",
                         "required": true,
@@ -144,6 +228,17 @@
                 "summary": "Delete a note in system",
                 "parameters": [
                     {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "User token",
+                        "type": "string",
+                        "schema": {
+                            "type": "string",
+                            "required": true
+                        }
+                    },
+                    {
                         "name": "id",
                         "in": "path",
                         "required": true,
@@ -166,6 +261,17 @@
         },
         "/api/v1/folders/getAll?userId={id}": {
             "parameters": [
+                {
+                    "name": "authorization",
+                    "in": "header",
+                    "required": true,
+                    "description": "User token",
+                    "type": "string",
+                    "schema": {
+                        "type": "string",
+                        "required": true
+                    }
+                },
                 {
                     "name": "id",
                     "in": "path",
@@ -197,13 +303,24 @@
                 "summary": "Create a new folder in system",
                 "parameters": [
                     {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "User token",
+                        "type": "string",
+                        "schema": {
+                            "type": "string",
+                            "required": true
+                        }
+                    },
+                    {
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "description": "Folder that we want create",
                         "type": "string",
                         "schema": {
-                            "$ref": "#/components/Folders/createFolderResponse"
+                            "$ref": "#/components/Folders/createFolderRequest"
                         }
                     }
                 ],
@@ -227,6 +344,17 @@
                 ],
                 "summary": "Update title of an folder in system",
                 "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "User token",
+                        "type": "string",
+                        "schema": {
+                            "type": "string",
+                            "required": true
+                        }
+                    },
                     {
                         "name": "body",
                         "in": "body",
@@ -258,6 +386,17 @@
                 ],
                 "summary": "Delete a folder in system",
                 "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "User token",
+                        "type": "string",
+                        "schema": {
+                            "type": "string",
+                            "required": true
+                        }
+                    },
                     {
                         "name": "id",
                         "in": "path",
@@ -341,6 +480,49 @@
                 }
             }
         },
+        "/api/v1/users/updateProfile" : {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update user",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "User token",
+                        "type": "string",
+                        "schema": {
+                            "type": "string",
+                            "required": true
+                        }
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "password information",
+                        "type": "string",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                    
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/Users/loginResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users/sendEmailToResetPassword" : {
             "post": {
                 "tags": [
@@ -404,7 +586,7 @@
             }
         },
         "/api/v1/users/updatePassword" : {
-            "post": {
+            "put": {
                 "tags": [
                     "Users"
                 ],
@@ -447,6 +629,17 @@
         },
         "/api/v1/users/getById?id={id}": {
             "parameters": [
+                {
+                    "name": "authorization",
+                    "in": "header",
+                    "required": true,
+                    "description": "User token",
+                    "type": "string",
+                    "schema": {
+                        "type": "string",
+                        "required": true
+                    }
+                },
                 {
                     "name": "id",
                     "in": "path",
@@ -641,6 +834,17 @@
                         "type": "object"
                     }
                 }
+            },
+            "updateProfileResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "user": {
+                        "type": "object"
+                    }
+                }
             }
         },
         "Notes": {
@@ -683,6 +887,17 @@
                     },
                     "notes": {
                         "type": "object"
+                    }
+                }
+            },
+            "getEmailsToShareResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "emails": {
+                        "type": "array"
                     }
                 }
             },
@@ -737,6 +952,20 @@
                         "type": "string"
                     },
                     "title": {
+                        "type": "string"
+                    }
+                }
+            },
+            "createFolderRequest": {
+                "type": "object",
+                "properties": {
+                    "userId": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "parentId": {
                         "type": "string"
                     }
                 }

@@ -115,34 +115,52 @@ export function login(req: Request, res: Response): void {
 }
 
 export async function getById(req: Request, res: Response) {
-    if (req.query.id) {
-        UserSchema.findById(req.query.id)
-            .then(user => {
-                if (user) {
-                    const userDetail: IUserDetail = {
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        email: user.email,
-                        isPremium: user.isPremium,
-                        phoneNumber: user.phoneNumber ?? "",
-                    };
-                    res.status(200).send({
-                        success: true,
-                        message: "User Find",
-                        user: userDetail,
-                    });
-                }
-            })
-            .catch(() => {
-                res.status(501).send({
-                    success: true,
-                    message: "User not found",
-                });
-            });
-    } else {
-        res.status(400).send({
-            success: false,
-            message: "Missing data ID",
+  if (req.query.id) {
+    UserSchema.findById(req.query.id)
+      .then((user) => {
+        if (user) {
+          const userDetail: IUserDetail = {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            isPremium: user.isPremium,
+            phoneNumber: user.phoneNumber ?? "",
+          };
+          res.status(200).send({
+            success: true,
+            message: "User Find",
+            user: userDetail,
+          });
+        }
+      })
+      .catch(() => {
+        res.status(501).send({
+          success: false,
+          message: "User not found",
         });
     }
+}
+
+export async function updateProfile(req: any, res: Response) {
+  if(req.data.id) {
+    UserSchema.findByIdAndUpdate(req.data.id, req.body, {new: true})
+    .then((user) => {
+      res.status(200).send({
+        success: true,
+        user
+      })
+    })
+    .catch((err) => {
+      res.status(401).send({
+        success: false,
+        message: err
+      })
+    }
+    )
+  } else {
+    res.status(401).send({
+      success: false,
+      message: "Missing data"
+    })
+  }
 }

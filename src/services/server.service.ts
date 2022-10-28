@@ -5,6 +5,7 @@ import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import basicAuth from "express-basic-auth";
 import * as swaggerJson from "../swagger.json";
+import schedule from "../schedules";
 
 const app = express();
 
@@ -29,3 +30,4 @@ export function start(): void {
         console.log(`App listening on PORT ${port}`);
     });
 }
+schedule();
