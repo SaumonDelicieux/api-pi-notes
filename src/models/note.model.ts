@@ -27,6 +27,12 @@ const noteSchema = new Schema({
     enum: ["public", "archived", "junk"],
     default: "junk",
   },
+  sharedWith: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User"
+    }
+  ],
   creationDate: {
     type: Date,
   },

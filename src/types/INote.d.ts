@@ -6,6 +6,7 @@ export interface INote extends mongoose.Document {
   title: string;
   text: string;
   state: string;
+  sharedWith: Array;
   creationDate: Date;
   lastUpdateDate: Date;
 }

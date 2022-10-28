@@ -1,4 +1,4 @@
-import { NoteSchema, UserSchema } from "../models";
+import { NoteSchema } from "../models";
 import { Request, Response } from "express";
 import { INote } from "../types";
 
@@ -116,31 +116,3 @@ export async function deleteNote(req: Request, res: Response) {
     });
 }
 
-export async function getEmailToShare(req: Request, res: Response) {
-  const regSearch = new RegExp(`^${req.headers.search}`, "i");
-  const emails: string[] = [];
-
-  UserSchema.find({
-    $or: [
-      { firstName: regSearch },
-      { lastName: regSearch },
-      { email: regSearch },
-    ],
-  })
-    .then((users) => {
-      users.forEach((user) => {
-        emails.push(user.email);
-      });
-
-      res.status(200).send({
-        success: true,
-        emails,
-      });
-    })
-    .catch((err) => {
-      res.status(401).send({
-        success: false,
-        message: err,
-      });
-    });
-}
