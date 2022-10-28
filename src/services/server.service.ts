@@ -1,6 +1,6 @@
 import express from "express";
 import { port, swaggerPassword } from "../configs/index.config";
-import { noteRouter, userRouter, folderRouter } from "../routes";
+import { noteRouter, userRouter, folderRouter, commonRouter } from "../routes";
 import cors from "cors";
 import bodyParser from "body-parser";
 import swaggerUi from "swagger-ui-express";
@@ -17,7 +17,7 @@ app.use(
   swaggerUi.serve,
   swaggerUi.setup(swaggerJson)
 );
-app.use("/api/v1/", [noteRouter, userRouter, folderRouter]);
+app.use("/api/v1/", [noteRouter, userRouter, folderRouter, commonRouter]);
 export function start(): void {
   app.listen(port, () => {
     console.log(`App listening on PORT ${port}`);
