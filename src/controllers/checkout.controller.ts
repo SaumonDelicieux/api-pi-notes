@@ -95,7 +95,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
             return res.status(200).json({
                 success: true,
                 message:
-                    "Paiement validé avec succes. Vous allez être redirigé dans quelques secondes...",
+                    "Paiement validé avec succes. Vous allez être redirigé dans quelques secondes",
                 token,
             });
         } else {
