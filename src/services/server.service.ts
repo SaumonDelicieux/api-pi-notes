@@ -1,6 +1,6 @@
 import express from "express";
 import { port, swaggerPassword } from "../configs/index.config";
-import { noteRouter, userRouter, folderRouter, checkoutRouter } from "../routes";
+import { noteRouter, userRouter, folderRouter, checkoutRouter, commonRouter } from "../routes";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import basicAuth from "express-basic-auth";
@@ -23,7 +23,7 @@ app.use(
     swaggerUi.serve,
     swaggerUi.setup(swaggerJson),
 );
-app.use("/api/v1/", [noteRouter, userRouter, folderRouter, checkoutRouter]);
+app.use("/api/v1/", [noteRouter, userRouter, folderRouter, checkoutRouter, commonRouter]);
 
 export function start(): void {
     app.listen(port, () => {

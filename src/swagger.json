@@ -96,46 +96,6 @@
                 }
             }
         },
-        "/api/v1/notes/getEmailsToShare": {
-            "parameters": [
-                {
-                    "name": "authorization",
-                    "in": "header",
-                    "required": true,
-                    "description": "User token",
-                    "type": "string",
-                    "schema": {
-                        "type": "string",
-                        "required": true
-                    }
-                },
-                {
-                    "name": "search",
-                    "in": "header",
-                    "required": true,
-                    "description": "String to search",
-                    "type": "string",
-                    "schema": {
-                        "type": "string",
-                        "required": true
-                    }
-                }
-            ],
-            "get": {
-                "tags": [
-                    "Notes"
-                ],
-                "summary": "Get note by id",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/components/Notes/getByIdResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/notes/createNote" : {
             "post": {
                 "tags": [
@@ -662,8 +622,97 @@
                     }
                 }
             }
+        },
+        "/api/v1/commons/getEmailsToShare?search={search}&noteId={noteId}": {
+            "parameters": [
+                {
+                    "name": "authorization",
+                    "in": "header",
+                    "required": true,
+                    "description": "User token",
+                    "type": "string",
+                    "schema": {
+                        "type": "string",
+                        "required": true
+                    }
+                },
+                {
+                    "name": "search",
+                    "in": "path",
+                    "required": true,
+                    "description": "String to search",
+                    "type": "string",
+                    "schema": {
+                        "type": "string",
+                        "required": true
+                    }
+                },
+                {
+                    "name": "noteId",
+                    "in": "path",
+                    "required": true,
+                    "description": "Id of the note",
+                    "type": "string",
+                    "schema": {
+                        "type": "string",
+                        "required": true
+                    }
+                }
+            ],
+            "get": {
+                "tags": [
+                    "Commons"
+                ],
+                "summary": "Get user by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/commons/shareNote": {
+            "parameters": [
+                {
+                    "name": "authorization",
+                    "in": "header",
+                    "required": true,
+                    "description": "password information",
+                    "type": "string",
+                    "schema": {
+                        "type": "string",
+                        "required": true
+                    }
+                },
+                {
+                    "name": "body",
+                    "in": "body",
+                    "required": true,
+                    "description": "password information",
+                    "type": "string",
+                    "schema": {
+                        "$ref": "#/components/Commons/shareNoteRequest"
+                    }
+                }
+            ],
+            "post": {
+                "tags": [
+                    "Commons"
+                ],
+                "summary": "Get user by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            
+                        }
+                    }
+                }
+            }
         }
-
     },
     "definitions": {
         "User": {
@@ -1035,6 +1084,19 @@
                 "properties": {
                     "userId": {
                         "type": "string"
+                    }
+                }
+            }
+        },
+        "Commons": {
+            "shareNoteRequest": {
+                "type": "object",
+                "properties": {
+                    "noteId": {
+                        "type": "string"
+                    },
+                    "usersId": {
+                        "type": "array"
                     }
                 }
             }
