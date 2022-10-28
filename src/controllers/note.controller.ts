@@ -53,7 +53,7 @@ export async function getNotes(req: Request, res: Response) {
 
 export async function getNote(req: Request, res: Response) {
   NoteSchema.findById(req.query.id)
-    .then((note: INote | null) => {
+    .then((note) => {
       res.status(200).send({
         success: true,
         note,
@@ -96,7 +96,7 @@ export async function deleteNote(req: Request, res: Response) {
   const noteId = req.query.noteId;
 
   NoteSchema.findByIdAndRemove(noteId)
-    .then((data: INote | null) => {
+    .then((data) => {
       if (!data) {
         res.status(404).send({
           message: `Cannot delete note with id=${noteId}. Maybe this note was not found !`,
@@ -117,29 +117,25 @@ export async function deleteNote(req: Request, res: Response) {
 }
 
 export async function getEmailToShare(req: Request, res: Response) {
-  const search = req.headers.search;
-  const regSearch = new RegExp(search as string, "i");
+  const regSearch = new RegExp(`^${req.headers.search}`, "i");
   const emails: string[] = [];
 
   UserSchema.find({
-    $or: [{ firstName: regSearch }, { lastName: regSearch }, { email: regSearch }],
+    $or: [
+      { firstName: regSearch },
+      { lastName: regSearch },
+      { email: regSearch },
+    ],
   })
     .then((users) => {
       users.forEach((user) => {
         emails.push(user.email);
       });
 
-      if (emails.length > 0) {
-        res.status(200).send({
-          success: true,
-          emails,
-        });
-      } else {
-        res.status(401).send({
-          success: false,
-          message: "Users not founded",
-        });
-      }
+      res.status(200).send({
+        success: true,
+        emails,
+      });
     })
     .catch((err) => {
       res.status(401).send({
