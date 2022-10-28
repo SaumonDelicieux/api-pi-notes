@@ -1,17 +1,12 @@
 import express from "express";
 import {
-  sendEmailToResetPassword,
-  verifyIfTokenExist,
-  resetPasswordAndDeleteToken,
+    sendEmailToResetPassword,
+    verifyIfTokenExist,
+    resetPasswordAndDeleteToken,
 } from "../controllers/token.controller";
 import { verifyToken } from "../helpers/verifyToken";
 
-import {
-  login,
-  register,
-  getById,
-  updateProfile,
-} from "../controllers/user.controller";
+import { login, register, getById, updateProfile } from "../controllers/user.controller";
 
 export const userRouter = express.Router();
 
