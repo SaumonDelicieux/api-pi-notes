@@ -1,12 +1,15 @@
 import express from "express";
 import {
-  createFolder,
-  deleteFolder,
-  getFolders,
+    createFolder,
+    deleteFolder,
+    updateFolderTitle,
+    getFolders,
 } from "../controllers/folder.controller";
+import { verifyToken } from "../helpers/verifyToken";
 
 export const folderRouter = express.Router();
 
-folderRouter.post("/folders/createFolder", createFolder);
-folderRouter.get("/folders/getAll", getFolders);
-folderRouter.delete("/folders/deleteFolder", deleteFolder);
+folderRouter.post("/folders/createFolder", verifyToken, createFolder);
+folderRouter.get("/folders/getAll", verifyToken, getFolders);
+folderRouter.put("/folders/updateFolderTitle", verifyToken, updateFolderTitle);
+folderRouter.delete("/folders/deleteFolder", verifyToken, deleteFolder);
