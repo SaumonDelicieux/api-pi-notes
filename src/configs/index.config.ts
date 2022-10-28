@@ -1,25 +1,27 @@
 export const port = process.env.PORT;
 export const db = process.env.DB_URI;
 export const jwtSecret = process.env.JWT_SECRET;
-export const urlFront = process.env.URL_FRONT;
 export const swaggerPassword = process.env.SWAGGER_PASSWORD;
+export const StripePrivateKey = process.env.STRIPE_PRIVATE_KEY;
+export const WebhooksKey = process.env.STRIPE_WH_KEY;
+
 import nodemailer from "nodemailer";
 import swagerdoc from "../swagger.json";
 
 swagerdoc.host = process.env.HOST ?? "";
 
 let logger = false;
-if (process.env.VITE_MODE === "development") {
-  logger = true;
+if (process.env.MODE === "development") {
+    logger = true;
 }
 
 export const transporter = nodemailer.createTransport({
-  host: process.env.SMTPHOST,
-  port: Number(process.env.SMTPPORT) || 0,
-  secure: true,
-  auth: {
-    user: process.env.SENDMAIL,
-    pass: process.env.MIALPASS,
-  },
-  logger: logger,
+    host: process.env.SMTPHOST,
+    port: Number(process.env.SMTPPORT) || 0,
+    secure: true,
+    auth: {
+        user: process.env.SENDMAIL,
+        pass: process.env.MIALPASS,
+    },
+    logger: logger,
 });
