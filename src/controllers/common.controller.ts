@@ -16,9 +16,11 @@ export async function getEmailToShare(req: Request, res: Response) {
     })
       .then(async (users) => {
         const note = await NoteSchema.findById(noteId);
-
         users.forEach((user) => {
-          if (!note?.sharedWith.includes(user._id)) {
+          if (
+            !note?.sharedWith.includes(user._id) &&
+            note?.userId.toString() !== user._id.toString()
+          ) {
             emails.push(user.email);
           }
         });
