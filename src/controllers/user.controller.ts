@@ -136,7 +136,7 @@ export async function getById(req: Request, res: Response) {
       })
       .catch(() => {
         res.status(501).send({
-          success: true,
+          success: false,
           message: "User not found",
         });
       });

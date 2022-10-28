@@ -441,7 +441,7 @@
             }
         },
         "/api/v1/users/updateProfile" : {
-            "post": {
+            "put": {
                 "tags": [
                     "Users"
                 ],
@@ -546,7 +546,7 @@
             }
         },
         "/api/v1/users/updatePassword" : {
-            "post": {
+            "put": {
                 "tags": [
                     "Users"
                 ],
