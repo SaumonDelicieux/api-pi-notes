@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/main.js",
   "scripts": {
-    "test": "mocha src/test/index.ts",
+    "test": "mocha src/__tests__/index.ts",
     "lint": "eslint . --fix",
     "format": "prettier --write \"src/**/*.ts\" --config ./.prettierrc.js",
     "dev": "npm run build && nodemon src/index.ts",
