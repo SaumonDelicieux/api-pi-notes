@@ -4,6 +4,8 @@ export const jwtSecret = process.env.JWT_SECRET;
 export const swaggerPassword = process.env.SWAGGER_PASSWORD;
 export const StripePrivateKey = process.env.STRIPE_PRIVATE_KEY;
 export const WebhooksKey = process.env.STRIPE_WH_KEY;
+export const WebhooksKeyLocal = process.env.STRIPE_WH_KEY_LOCAL;
+export const Mode = process.env.MODE;
 
 import nodemailer from "nodemailer";
 import swagerdoc from "../swagger.json";
