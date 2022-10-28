@@ -75,8 +75,6 @@ export const verifyPayment = async (req: Request, res: Response) => {
         const user = await UserSchema.findById(id);
 
         if (user?.isPremium) {
-            console.log("Succceessssssss");
-
             const token = jwt.sign(
                 {
                     id: user._id,
@@ -137,8 +135,6 @@ export const paymentSuccess = async (req: Request, res: Response) => {
                 const user = await UserSchema.findByIdAndUpdate(data.object.metadata.userId, {
                     isPremium: true,
                 });
-
-                console.log({ user });
             } catch (error) {
                 console.log(error);
             }
