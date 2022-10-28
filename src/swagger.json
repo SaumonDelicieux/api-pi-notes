@@ -791,6 +791,24 @@
                     }
                 }
             }
+        },
+        "Stripe": {
+            "createSession": {
+                "type": "object",
+                "properties": {
+                    "userId": {
+                        "type": "string"
+                    }
+                }
+            },
+            "verifyPayment": {
+                "type": "object",
+                "properties": {
+                    "userId": {
+                        "type": "string"
+                    }
+                }
+            }
         }
     }
 }
