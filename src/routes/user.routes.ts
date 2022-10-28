@@ -1,8 +1,8 @@
 import express from "express";
 import {
-  sendEmailToResetPassword,
-  verifyIfTokenExist,
-  resetPasswordAndDeleteToken,
+    sendEmailToResetPassword,
+    verifyIfTokenExist,
+    resetPasswordAndDeleteToken,
 } from "../controllers/token.controller";
 import { verifyToken } from "../helpers/verifyToken";
 
