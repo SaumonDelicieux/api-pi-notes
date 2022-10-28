@@ -4,39 +4,39 @@ import fs from "fs";
 import path from "path";
 
 export async function registerSucces(user: IUserDetail) {
-  let htmltosend = getTemplate("welcom");
-  const reg = new RegExp("(__customer__)", "g");
+    let htmltosend = getTemplate("welcom");
+    const reg = new RegExp("(__customer__)", "g");
 
-  htmltosend = htmltosend.replace(reg, `${user.firstName} ${user.lastName}`);
-  const nodemailer: IMailOptions = {
-    to: user.email,
-    subject: "Welcome 👋👋👋👋👋👋",
-    html: htmltosend,
-  };
-  sendMail(nodemailer);
+    htmltosend = htmltosend.replace(reg, `${user.firstName} ${user.lastName}`);
+    const nodemailer: IMailOptions = {
+        to: user.email,
+        subject: "Welcome 👋👋👋👋👋👋",
+        html: htmltosend,
+    };
+    sendMail(nodemailer);
 }
 
 const getTemplate = (type = "basic") => {
-  return fs.readFileSync(
-    path.join(__dirname, "../emails/template/", `template-${type}.html`),
-    "utf-8"
-  );
+    return fs.readFileSync(
+        path.join(__dirname, "../emails/template/", `template-${type}.html`),
+        "utf-8",
+    );
 };
 
 export async function sendMail(mailOptions: IMailOptions) {
-  const mailOption: IMailOptions = {
-    from: "Pi'note teams <noreply.pi-note@gmail.com>",
-    replyTo: "noreply.pi-note@gmail.com",
-    to: mailOptions.to,
-    subject: mailOptions.subject,
-    text: mailOptions.text,
-    html: mailOptions.html,
-  };
-  transporter.sendMail(mailOption, function (error: any, info: any) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-    }
-  });
+    const mailOption: IMailOptions = {
+        from: "Pi'note teams <noreply.pi-note@gmail.com>",
+        replyTo: "noreply.pi-note@gmail.com",
+        to: mailOptions.to,
+        subject: mailOptions.subject,
+        text: mailOptions.text,
+        html: mailOptions.html,
+    };
+    transporter.sendMail(mailOption, function (error: any, info: any) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log("Email sent: " + info.response);
+        }
+    });
 }
