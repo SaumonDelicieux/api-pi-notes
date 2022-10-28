@@ -10,6 +10,7 @@ declare global {
             PWD: string;
             STRIPE_PRIVATE_KEY: string;
             STRIPE_WH_KEY: string;
+            STRIPE_WH_KEY_LOCAL: string;
             DB_URI: string;
             JWT_SECRET: string;
             SWAGGER_PASSWORD: string;

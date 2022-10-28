@@ -5,7 +5,13 @@ import jwt from "jsonwebtoken";
 
 import { UserSchema } from "../models";
 
-import { jwtSecret, StripePrivateKey, WebhooksKey } from "../configs/index.config";
+import {
+    jwtSecret,
+    Mode,
+    StripePrivateKey,
+    WebhooksKey,
+    WebhooksKeyLocal,
+} from "../configs/index.config";
 
 const TITLE_PRODUCT = "Pi'Note | Premium";
 const DESCRIPTION_PRODUCT = "Possibilité de partager une note avec d'autres collaborateurs";
@@ -88,7 +94,8 @@ export const verifyPayment = async (req: Request, res: Response) => {
 
             return res.status(200).json({
                 success: true,
-                message: "Paiement validé avec succes",
+                message:
+                    "Paiement validé avec succes. Vous allez être redirigé dans quelques secondes...",
                 token,
             });
         } else {
@@ -104,13 +111,14 @@ export const paymentSuccess = async (req: Request, res: Response) => {
     let data;
     let eventType;
 
+    const whKey = Mode === "development" ? WebhooksKeyLocal : WebhooksKey;
     const sig = req.headers["stripe-signature"] as string;
 
-    if (WebhooksKey && sig) {
+    if (whKey && sig) {
         let event;
 
         try {
-            event = await stripeClient.webhooks.constructEventAsync(req.body, sig, WebhooksKey);
+            event = await stripeClient.webhooks.constructEventAsync(req.body, sig, whKey);
         } catch (err) {
             console.log({ err });
             return res.status(400).send(`Webhook Error`);
