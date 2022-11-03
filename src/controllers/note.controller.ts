@@ -1,6 +1,7 @@
 import { NoteSchema } from "../models";
 import { Request, Response } from "express";
 import { INote } from "../types";
+import { cleanNotes } from "../schedules/cleanNote";
 
 export async function createNote(req: Request, res: Response) {
   const note: INote = new NoteSchema({
@@ -102,6 +103,7 @@ export async function deleteNote(req: Request, res: Response) {
           message: `Cannot delete note with id=${noteId}. Maybe this note was not found !`,
         });
       } else {
+        cleanNotes();
         res.status(200).send({
           success: true,
           message: "Note was deleted successfully!",

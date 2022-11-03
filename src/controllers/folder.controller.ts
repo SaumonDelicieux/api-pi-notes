@@ -1,10 +1,11 @@
 import { FolderSchema, UserSchema } from "../models";
 import { Request, Response } from "express";
 import { IFolders, IUser } from "../types";
+import { cleanFolders } from "../schedules/cleanFolder";
 
 export async function createFolder(req: Request, res: Response) {
   UserSchema.findById(req.body.userId)
-    .then((user: IUser | null) => {
+    .then((user) => {
       const folder: IFolders = new FolderSchema({
         title: req.body.title,
         userId: req.body.userId,
@@ -55,7 +56,7 @@ export async function getFolders(req: Request, res: Response) {
   FolderSchema.find({
     userId: req.query.userId,
   })
-    .then((folders: IFolders[]) => {
+    .then((folders) => {
       res.status(200).send({
         success: true,
         folders,
@@ -70,7 +71,11 @@ export async function getFolders(req: Request, res: Response) {
 }
 
 export async function updateFolderTitle(req: Request, res: Response) {
-  FolderSchema.findByIdAndUpdate(req.body.id, { title: req.body.title }, { new: true })
+  FolderSchema.findByIdAndUpdate(
+    req.body.id,
+    { title: req.body.title },
+    { new: true }
+  )
     .then((folder) => {
       res.status(200).send({
         seccuss: true,
@@ -90,12 +95,13 @@ export async function deleteFolder(req: Request, res: Response) {
   const folderId = req.query.folderId;
 
   FolderSchema.findByIdAndRemove(folderId)
-    .then((data: IFolders | null) => {
+    .then((data) => {
       if (!data) {
         res.status(404).send({
-          message: `Cannot delete note with id=${folderId}. Maybe this note was not found !`,
+          message: `Cannot delete folder with id=${folderId}. Maybe this note was not found !`,
         });
       } else {
+        cleanFolders();
         res.status(200).send({
           success: true,
           message: "Folder was deleted successfully!",

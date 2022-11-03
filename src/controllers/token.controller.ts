@@ -6,9 +6,11 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import randomString from "randomstring";
+import { resetPasword } from "../utils/email";
 
 export function sendEmailToResetPassword(req: Request, res: Response): void {
   if (req.body.identifer) {
+    const url: string = `${req.protocol}://${req.get("host")}`;
     UserSchema.findOne({
       $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
     })
@@ -18,13 +20,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
         })
           .then((token) => {
             if (token) {
-              const nodemailer: IMailOptions = {
-                to: user!.email,
-                subject: "Reset password | PI'notes",
-                html: `<p>${urlFront}updatePassword?token=${token?.token}</p>`,
-              };
-              sendMail(nodemailer);
-
+              resetPasword(user!, token.token, url);
               res.status(200).send({
                 success: true,
                 message: "Email sended",
@@ -48,13 +44,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
 
               token.save();
 
-              const nodemailer: IMailOptions = {
-                to: user!.email,
-                subject: "Reset password | PI'notes",
-                html: `<p>${urlFront}updatePassword?token=${token?.token}</p>`,
-              };
-
-              sendMail(nodemailer);
+              resetPasword(user!, token.token, url);
 
               res.status(200).send({
                 success: true,
@@ -101,7 +91,6 @@ export function verifyIfTokenExist(req: Request, res: Response): void {
             message: "Invalid token",
           });
         }
-        
       })
       .catch((err) => {
         res.status(401).send({

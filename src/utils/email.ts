@@ -4,10 +4,14 @@ import fs from "fs";
 import path from "path";
 
 export async function registerSucces(user: IUserDetail) {
-  let htmltosend = getTemplate("welcom");
+  let html = getTemplate("welcom");
   const reg = new RegExp("(__customer__)", "g");
 
-  htmltosend = htmltosend.replace(reg, `${user.firstName} ${user.lastName}`);
+  html = html.replace(reg, `${user.firstName} ${user.lastName}`);
+  let htmltosend = getTemplate("base");
+  const regbase = new RegExp("(__Template__)", "g");
+  htmltosend = htmltosend.replace(regbase, html);
+
   const nodemailer: IMailOptions = {
     to: user.email,
     subject: "Welcome 👋👋👋👋👋👋",
@@ -16,7 +20,31 @@ export async function registerSucces(user: IUserDetail) {
   sendMail(nodemailer);
 }
 
-const getTemplate = (type = "basic") => {
+export async function resetPasword(
+  user: IUserDetail,
+  token: string,
+  urlfront: string
+) {
+  let html = getTemplate("resset");
+  const reg = new RegExp("(__customer__)", "g");
+  html = html.replace(reg, `${user.firstName} ${user.lastName}`);
+
+  const reg2 = new RegExp("(__url__)", "g");
+  html = html.replace(reg2, `${urlfront}/updatePassword?token=${token}`);
+
+  let htmltosend = getTemplate("base");
+  const regbase = new RegExp("(__Template__)", "g");
+  htmltosend = htmltosend.replace(regbase, html);
+
+  const nodemailer: IMailOptions = {
+    to: user!.email,
+    subject: "Reset password | PI'notes",
+    html: htmltosend,
+  };
+  sendMail(nodemailer);
+}
+
+const getTemplate = (type = "base") => {
   return fs.readFileSync(
     path.join(__dirname, "../emails/template/", `template-${type}.html`),
     "utf-8"
