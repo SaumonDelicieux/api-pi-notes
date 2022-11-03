@@ -75,7 +75,7 @@ export async function updateNote(req: Request, res: Response) {
         .then(note => {
             console.log(note);
             res.status(200).send({
-                seccuss: true,
+                success: true,
                 message: "The note has been updated",
                 note,
             });
@@ -91,19 +91,19 @@ export async function updateNote(req: Request, res: Response) {
 export async function deleteNote(req: Request, res: Response) {
     const noteId = req.query.noteId;
 
-  NoteSchema.findByIdAndRemove(noteId)
-    .then((data: INote | null) => {
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot delete note with id=${noteId}. Maybe this note was not found !`,
-        });
-      } else {
-        cleanNotes();
-        res.status(200).send({
-          success: true,
-          message: "Note was deleted successfully!",
-          noteId,
-            });
+    NoteSchema.findByIdAndRemove(noteId)
+        .then((data: INote | null) => {
+            if (!data) {
+                res.status(404).send({
+                    message: `Cannot delete note with id=${noteId}. Maybe this note was not found !`,
+                });
+            } else {
+                cleanNotes();
+                res.status(200).send({
+                    success: true,
+                    message: "Note was deleted successfully!",
+                    noteId,
+                });
             }
         })
         .catch(err => {
