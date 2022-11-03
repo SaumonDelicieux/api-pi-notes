@@ -2,6 +2,7 @@ import { FolderSchema, UserSchema } from "../models";
 import { Request, Response } from "express";
 import { IFolders, IUser } from "../types";
 import { cleanFolders } from "../schedules/cleanFolder";
+import { cleanNotes } from "../schedules/cleanNote";
 
 export async function createFolder(req: Request, res: Response) {
   UserSchema.findById(req.body.userId)
@@ -96,6 +97,7 @@ export async function deleteFolder(req: Request, res: Response) {
         });
       } else {
         cleanFolders();
+        cleanNotes();
         res.status(200).send({
           success: true,
           message: "Folder was deleted successfully!",
