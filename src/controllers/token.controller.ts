@@ -1,45 +1,40 @@
 import { TokenSchema, UserSchema } from "../models";
-import { IMailOptions, IToken, IUser } from "../types";
-import { sendMail } from "../utils/email";
+import { IToken, IUser } from "../types";
 import { jwtSecret } from "../configs/index.config";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import randomString from "randomstring";
+import { resetPasword } from "../utils/email";
 
 export function sendEmailToResetPassword(req: Request, res: Response): void {
-    if (req.body.identifer) {
-        UserSchema.findOne({
-            $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
+  if (req.body.identifer) {
+    const url: string = `${req.protocol}://${req.get("host")}`;
+    UserSchema.findOne({
+      $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
+    })
+      .then((user) => {
+        TokenSchema.findOne({
+          userId: user?._id,
         })
-            .then(user => {
-                TokenSchema.findOne({
-                    userId: user?._id,
-                })
-                    .then(token => {
-                        if (token) {
-                            const nodemailer: IMailOptions = {
-                                to: user!.email,
-                                subject: "Reset password | PI'notes",
-                                html: `<p>${req.headers.origin}/updatePassword?token=${token?.token}</p>`,
-                            };
-                            sendMail(nodemailer);
-
-                            res.status(200).send({
-                                success: true,
-                                message: "Email sended",
-                                email: user?.email,
-                            });
-                        } else {
-                            const userToken = jwt.sign(
-                                {
-                                    hash: randomString.generate(100),
-                                },
-                                jwtSecret as string,
-                                {
-                                    expiresIn: 86400,
-                                },
-                            );
+          .then((token) => {
+            if (token) {
+              resetPasword(user!, token.token, url);
+              res.status(200).send({
+                success: true,
+                message: "Email sended",
+                email: user?.email,
+              });
+            } else {
+              const userToken = jwt.sign(
+                {
+                  hash: randomString.generate(100),
+                },
+                jwtSecret as string,
+                {
+                  expiresIn: 86400,
+                }
+              );
 
                             const token: IToken = new TokenSchema({
                                 userId: user?._id,
@@ -48,13 +43,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
 
                             token.save();
 
-                            const nodemailer: IMailOptions = {
-                                to: user!.email,
-                                subject: "Reset password | PI'notes",
-                                html: `<p>${req.headers.origin}/updatePassword?token=${token?.token}</p>`,
-                            };
-
-                            sendMail(nodemailer);
+              resetPasword(user!, token.token, url);
 
                             res.status(200).send({
                                 success: true,
@@ -112,6 +101,7 @@ export function verifyIfTokenExist(req: Request, res: Response): void {
         res.status(400).send({
             success: false,
             message: "Missing data",
+
         });
     }
 }
