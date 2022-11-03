@@ -5,23 +5,24 @@ export async function getEmailToShare(req: Request, res: Response) {
     if (req.query.search) {
         const regSearch = new RegExp(`^${req.query.search}`, "i");
         const noteId = req.query.noteId;
-        const emails: string[] = [];
+        const usersToSuggest: { id: string; email: string }[] = [];
 
         UserSchema.find({
             $or: [{ firstName: regSearch }, { lastName: regSearch }, { email: regSearch }],
         })
             .then(async users => {
                 const note = await NoteSchema.findById(noteId);
-
                 users.forEach(user => {
-                    if (!note?.sharedWith.includes(user._id)) {
-                        emails.push(user.email);
+                    if (
+                        !note?.sharedWith.includes(user._id) &&
+                        note?.userId.toString() !== user._id.toString()
+                    ) {
+                        usersToSuggest.push({ id: user._id, email: user.email });
                     }
                 });
-
                 res.status(200).send({
                     success: true,
-                    emails,
+                    usersToSuggest,
                 });
             })
             .catch(err => {
@@ -53,6 +54,25 @@ export async function shareNote(req: Request, res: Response) {
             res.status(401).send({
                 success: false,
                 message: err,
+            });
+        });
+}
+
+export async function deleteFromSharedWith(req: Request, res: Response) {
+    const noteId = req.body.noteId;
+    const userId = req.body.userId;
+
+    NoteSchema.findByIdAndUpdate({ _id: noteId }, { $pull: { sharedWith: userId } }, { new: true })
+        .then(note => {
+            res.status(200).send({
+                success: true,
+                note,
+            });
+        })
+        .catch(err => {
+            res.status(401).send({
+                success: false,
+                message: err.message,
             });
         });
 }
