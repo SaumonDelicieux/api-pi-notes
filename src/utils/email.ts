@@ -52,19 +52,19 @@ const getTemplate = (type = "base") => {
 };
 
 export async function sendMail(mailOptions: IMailOptions) {
-  const mailOption: IMailOptions = {
-    from: "Pi'note teams <noreply.pi-note@gmail.com>",
-    replyTo: "noreply.pi-note@gmail.com",
-    to: mailOptions.to,
-    subject: mailOptions.subject,
-    text: mailOptions.text,
-    html: mailOptions.html,
-  };
-  transporter.sendMail(mailOption, function (error: any, info: any) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-    }
-  });
+    const mailOption: IMailOptions = {
+        from: "Pi'note teams <noreply.pi-note@gmail.com>",
+        replyTo: "noreply.pi-note@gmail.com",
+        to: mailOptions.to,
+        subject: mailOptions.subject,
+        text: mailOptions.text,
+        html: mailOptions.html,
+    };
+    transporter.sendMail(mailOption, function (error: any, info: any) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log("Email sent: " + info.response);
+        }
+    });
 }

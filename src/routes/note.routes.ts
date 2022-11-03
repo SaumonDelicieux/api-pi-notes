@@ -1,10 +1,10 @@
 import express from "express";
 import {
-  createNote,
-  getNotes,
-  getNote,
-  updateNote,
-  deleteNote,
+    createNote,
+    getNotes,
+    getNote,
+    updateNote,
+    deleteNote,
 } from "../controllers/note.controller";
 import { verifyToken } from "../helpers/verifyToken";
 

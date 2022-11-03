@@ -441,7 +441,7 @@
             }
         },
         "/api/v1/users/updateProfile" : {
-            "post": {
+            "put": {
                 "tags": [
                     "Users"
                 ],
@@ -546,7 +546,7 @@
             }
         },
         "/api/v1/users/updatePassword" : {
-            "post": {
+            "put": {
                 "tags": [
                     "Users"
                 ],
@@ -622,8 +622,97 @@
                     }
                 }
             }
+        },
+        "/api/v1/commons/getEmailsToShare?search={search}&noteId={noteId}": {
+            "parameters": [
+                {
+                    "name": "authorization",
+                    "in": "header",
+                    "required": true,
+                    "description": "User token",
+                    "type": "string",
+                    "schema": {
+                        "type": "string",
+                        "required": true
+                    }
+                },
+                {
+                    "name": "search",
+                    "in": "path",
+                    "required": true,
+                    "description": "String to search",
+                    "type": "string",
+                    "schema": {
+                        "type": "string",
+                        "required": true
+                    }
+                },
+                {
+                    "name": "noteId",
+                    "in": "path",
+                    "required": true,
+                    "description": "Id of the note",
+                    "type": "string",
+                    "schema": {
+                        "type": "string",
+                        "required": true
+                    }
+                }
+            ],
+            "get": {
+                "tags": [
+                    "Commons"
+                ],
+                "summary": "Get user by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/commons/shareNote": {
+            "parameters": [
+                {
+                    "name": "authorization",
+                    "in": "header",
+                    "required": true,
+                    "description": "password information",
+                    "type": "string",
+                    "schema": {
+                        "type": "string",
+                        "required": true
+                    }
+                },
+                {
+                    "name": "body",
+                    "in": "body",
+                    "required": true,
+                    "description": "password information",
+                    "type": "string",
+                    "schema": {
+                        "$ref": "#/components/Commons/shareNoteRequest"
+                    }
+                }
+            ],
+            "post": {
+                "tags": [
+                    "Commons"
+                ],
+                "summary": "Get user by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            
+                        }
+                    }
+                }
+            }
         }
-
     },
     "definitions": {
         "User": {
@@ -850,6 +939,17 @@
                     }
                 }
             },
+            "getEmailsToShareResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "emails": {
+                        "type": "array"
+                    }
+                }
+            },
             "createNoteResponse": {
                 "type": "object",
                 "properties": {
@@ -966,6 +1066,37 @@
                     },
                     "folder": {
                         "type": "object"
+                    }
+                }
+            }
+        },
+        "Stripe": {
+            "createSession": {
+                "type": "object",
+                "properties": {
+                    "userId": {
+                        "type": "string"
+                    }
+                }
+            },
+            "verifyPayment": {
+                "type": "object",
+                "properties": {
+                    "userId": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "Commons": {
+            "shareNoteRequest": {
+                "type": "object",
+                "properties": {
+                    "noteId": {
+                        "type": "string"
+                    },
+                    "usersId": {
+                        "type": "array"
                     }
                 }
             }
