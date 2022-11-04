@@ -8,7 +8,7 @@
     "lint:scan": "eslint \"src/\"",
     "lint": "eslint \"src/\" --fix",
     "format": "prettier --write \"src/**/*.ts\" --config ./.prettierrc.js",
-    "dev": "npm run build && nodemon src/index.ts",
+    "dev": "nodemon src/index.ts",
     "start": "node dist/index.js",
     "build": "rimraf ./build && tsc"
   },
