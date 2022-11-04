@@ -1,40 +1,45 @@
-import { TokenSchema, UserSchema } from "../models";
-import { IToken, IUser } from "../types";
-import { jwtSecret } from "../configs/index.config";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
 import randomString from "randomstring";
-import { resetPasword } from "../utils/email";
+import bcrypt from "bcrypt";
 
-export function sendEmailToResetPassword(req: Request, res: Response): void {
-  if (req.body.identifer) {
-    const url: string = `${req.protocol}://${req.get("host")}`;
-    UserSchema.findOne({
-      $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
-    })
-      .then((user) => {
-        TokenSchema.findOne({
-          userId: user?._id,
+import { TokenSchema, UserSchema } from "../models";
+
+import { IToken, IUser } from "../types";
+
+import { JWT_SECRET } from "../configs/constants";
+
+import { resetPassword } from "../utils/email";
+
+export const sendEmailToResetPassword = (req: Request, res: Response) => {
+    if (req.body.identifer) {
+        const url = `${req.protocol}://${req.hostname}`;
+
+        UserSchema.findOne({
+            $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
         })
-          .then((token) => {
-            if (token) {
-              resetPasword(user!, token.token, url);
-              res.status(200).send({
-                success: true,
-                message: "Email sended",
-                email: user?.email,
-              });
-            } else {
-              const userToken = jwt.sign(
-                {
-                  hash: randomString.generate(100),
-                },
-                jwtSecret as string,
-                {
-                  expiresIn: 86400,
-                }
-              );
+            .then(user => {
+                TokenSchema.findOne({
+                    userId: user?._id,
+                })
+                    .then(token => {
+                        if (token) {
+                            resetPassword(user!, token.token, url);
+                            res.status(200).send({
+                                success: true,
+                                message: "Email sended",
+                                email: user?.email,
+                            });
+                        } else {
+                            const userToken = jwt.sign(
+                                {
+                                    hash: randomString.generate(100),
+                                },
+                                JWT_SECRET as string,
+                                {
+                                    expiresIn: 86400,
+                                },
+                            );
 
                             const token: IToken = new TokenSchema({
                                 userId: user?._id,
@@ -43,7 +48,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
 
                             token.save();
 
-              resetPasword(user!, token.token, url);
+                            resetPassword(user!, token.token, url);
 
                             res.status(200).send({
                                 success: true,
@@ -71,9 +76,9 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
             message: "Missing data",
         });
     }
-}
+};
 
-export function verifyIfTokenExist(req: Request, res: Response): void {
+export const verifyIfTokenExist = (req: Request, res: Response) => {
     if (req.body.token) {
         TokenSchema.findOne({
             token: req.body.token,
@@ -101,12 +106,11 @@ export function verifyIfTokenExist(req: Request, res: Response): void {
         res.status(400).send({
             success: false,
             message: "Missing data",
-
         });
     }
-}
+};
 
-export function resetPasswordAndDeleteToken(req: any, res: Response): void {
+export const resetPasswordAndDeleteToken = (req: Request, res: Response) => {
     if (req.headers["token"] && req.body.password) {
         const hashedPassword: string = bcrypt.hashSync(req.body.password, 10);
         const tokenUser = req.headers["token"];
@@ -152,4 +156,4 @@ export function resetPasswordAndDeleteToken(req: any, res: Response): void {
             message: "Missing data",
         });
     }
-}
+};

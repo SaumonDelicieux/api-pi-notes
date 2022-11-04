@@ -1,9 +1,10 @@
-import { NoteSchema } from "../models";
 import { Request, Response } from "express";
+
+import { NoteSchema } from "../models";
+
 import { INote } from "../types";
 
-
-export async function createNote(req: Request, res: Response) {
+export const createNote = async (req: Request, res: Response) => {
     const note: INote = new NoteSchema({
         folderId: req.body.folderId,
         userId: req.body.userId,
@@ -26,9 +27,9 @@ export async function createNote(req: Request, res: Response) {
                 message: err.message || "Some error occured",
             });
         });
-}
+};
 
-export async function getNotes(req: Request, res: Response) {
+export const getNotes = async (req: Request, res: Response) => {
     if (req.query.userId) {
         NoteSchema.find({ userId: req.query.userId })
             .then((notes: INote[]) => {
@@ -37,7 +38,7 @@ export async function getNotes(req: Request, res: Response) {
                     notes,
                 });
             })
-            .catch(err => {
+            .catch(() => {
                 res.status(500).send({
                     success: false,
                     message: "Some error occured",
@@ -49,9 +50,9 @@ export async function getNotes(req: Request, res: Response) {
             message: "Missing data",
         });
     }
-}
+};
 
-export async function getNote(req: Request, res: Response) {
+export const getNote = async (req: Request, res: Response) => {
     NoteSchema.findById(req.query.id)
         .then(note => {
             res.status(200).send({
@@ -68,9 +69,9 @@ export async function getNote(req: Request, res: Response) {
                 });
             }
         });
-}
+};
 
-export async function updateNote(req: Request, res: Response) {
+export const updateNote = async (req: Request, res: Response) => {
     NoteSchema.findByIdAndUpdate(req.body.id, { $set: req.body }, { new: true })
         .then(note => {
             console.log(note);
@@ -86,28 +87,28 @@ export async function updateNote(req: Request, res: Response) {
                 message: `Error : ${err}`,
             });
         });
-}
+};
 
-export async function deleteNote(req: Request, res: Response) {
+export const deleteNote = async (req: Request, res: Response) => {
     const noteId = req.query.noteId;
 
-  NoteSchema.findByIdAndRemove(noteId)
-    .then((data: INote | null) => {
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot delete note with id=${noteId}. Maybe this note was not found !`,
-        });
-      } else {
-        res.status(200).send({
-          success: true,
-          message: "Note was deleted successfully!",
-          noteId,
-            });
+    NoteSchema.findByIdAndRemove(noteId)
+        .then((data: INote | null) => {
+            if (!data) {
+                res.status(404).send({
+                    message: `Cannot delete note with id=${noteId}. Maybe this note was not found !`,
+                });
+            } else {
+                res.status(200).send({
+                    success: true,
+                    message: "Note was deleted successfully!",
+                    noteId,
+                });
             }
         })
-        .catch(err => {
+        .catch(() => {
             res.status(500).send({
                 message: "Could not delete note with id=" + noteId,
             });
         });
-}
+};

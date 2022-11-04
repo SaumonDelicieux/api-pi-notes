@@ -1,7 +1,8 @@
-import { UserSchema, NoteSchema } from "../models";
 import { Request, Response } from "express";
 
-export async function getEmailToShare(req: Request, res: Response) {
+import { UserSchema, NoteSchema } from "../models";
+
+export const getEmailToShare = async (req: Request, res: Response) => {
     if (req.query.search) {
         const regSearch = new RegExp(`^${req.query.search}`, "i");
         const noteId = req.query.noteId;
@@ -37,9 +38,9 @@ export async function getEmailToShare(req: Request, res: Response) {
             message: "Missing data",
         });
     }
-}
+};
 
-export async function shareNote(req: Request, res: Response) {
+export const shareNote = async (req: Request, res: Response) => {
     const noteId = req.body.noteId;
     const usersId = req.body.usersId;
 
@@ -56,9 +57,9 @@ export async function shareNote(req: Request, res: Response) {
                 message: err,
             });
         });
-}
+};
 
-export async function deleteFromSharedWith(req: Request, res: Response) {
+export const deleteFromSharedWith = async (req: Request, res: Response) => {
     const noteId = req.body.noteId;
     const userId = req.body.userId;
 
@@ -75,4 +76,4 @@ export async function deleteFromSharedWith(req: Request, res: Response) {
                 message: err.message,
             });
         });
-}
+};

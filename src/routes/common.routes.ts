@@ -1,5 +1,7 @@
 import express from "express";
+
 import { getEmailToShare, shareNote, deleteFromSharedWith } from "../controllers/common.controller";
+
 import { verifyToken } from "../helpers/verifyToken";
 
 export const commonRouter = express.Router();
