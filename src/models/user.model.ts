@@ -34,6 +34,9 @@ const userSchema = new Schema({
     creationDate: {
         type: Date,
     },
+    endOfsubscription: {
+        type: Date,
+    },
     lastUpdateDate: {
         type: Date,
     },

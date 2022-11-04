@@ -132,9 +132,26 @@ export const paymentSuccess = async (req: Request, res: Response) => {
     switch (eventType) {
         case "payment_intent.succeeded":
             try {
-                const user = await UserSchema.findByIdAndUpdate(data.object.metadata.userId, {
-                    isPremium: true,
-                });
+                const user = await UserSchema.findOne(data.object.metadata.userId);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (
+                    user?.endOfsubscription &&
+                    user?.endOfsubscription.getTime() >= today.getTime()
+                ) {
+                    const expireDate = user.endOfsubscription;
+                    expireDate.setMonth(expireDate.getMonth() + 1);
+                    UserSchema.findByIdAndUpdate(user._id, {
+                        isPremium: true,
+                        endOfsubscription: expireDate,
+                    });
+                } else {
+                    today.setMonth(today.getMonth() + 1);
+                    UserSchema.findByIdAndUpdate(user?._id, {
+                        isPremium: true,
+                        endOfsubscription: today,
+                    });
+                }
             } catch (error) {
                 console.log(error);
             }

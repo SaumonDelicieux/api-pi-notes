@@ -6,35 +6,35 @@ import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import randomString from "randomstring";
 import { resetPasword } from "../utils/email";
+import { URL_FRONT } from "../configs/index.config";
 
 export function sendEmailToResetPassword(req: Request, res: Response): void {
-  if (req.body.identifer) {
-    const url: string = `${req.protocol}://${req.get("host")}`;
-    UserSchema.findOne({
-      $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
-    })
-      .then((user) => {
-        TokenSchema.findOne({
-          userId: user?._id,
+    if (req.body.identifer) {
+        UserSchema.findOne({
+            $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
         })
-          .then((token) => {
-            if (token) {
-              resetPasword(user!, token.token, url);
-              res.status(200).send({
-                success: true,
-                message: "Email sended",
-                email: user?.email,
-              });
-            } else {
-              const userToken = jwt.sign(
-                {
-                  hash: randomString.generate(100),
-                },
-                jwtSecret as string,
-                {
-                  expiresIn: 86400,
-                }
-              );
+            .then(user => {
+                TokenSchema.findOne({
+                    userId: user?._id,
+                })
+                    .then(token => {
+                        if (token) {
+                            resetPasword(user!, token.token, URL_FRONT);
+                            res.status(200).send({
+                                success: true,
+                                message: "Email sended",
+                                email: user?.email,
+                            });
+                        } else {
+                            const userToken = jwt.sign(
+                                {
+                                    hash: randomString.generate(100),
+                                },
+                                jwtSecret as string,
+                                {
+                                    expiresIn: 86400,
+                                },
+                            );
 
                             const token: IToken = new TokenSchema({
                                 userId: user?._id,
@@ -43,7 +43,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
 
                             token.save();
 
-              resetPasword(user!, token.token, url);
+                            resetPasword(user!, token.token, URL_FRONT);
 
                             res.status(200).send({
                                 success: true,
@@ -101,7 +101,6 @@ export function verifyIfTokenExist(req: Request, res: Response): void {
         res.status(400).send({
             success: false,
             message: "Missing data",
-
         });
     }
 }

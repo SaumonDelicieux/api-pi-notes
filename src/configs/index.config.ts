@@ -6,6 +6,7 @@ export const StripePrivateKey = process.env.STRIPE_PRIVATE_KEY;
 export const WebhooksKey = process.env.STRIPE_WH_KEY;
 export const WebhooksKeyLocal = process.env.STRIPE_WH_KEY_LOCAL;
 export const Mode = process.env.MODE;
+export const URL_FRONT: string = process.env.URL_FRONT ?? "";
 
 import nodemailer from "nodemailer";
 import swagerdoc from "../swagger.json";
