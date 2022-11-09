@@ -73,7 +73,6 @@ export async function getNote(req: Request, res: Response) {
 export async function updateNote(req: Request, res: Response) {
     NoteSchema.findByIdAndUpdate(req.body.id, { $set: req.body }, { new: true })
         .then(note => {
-            console.log(note);
             res.status(200).send({
                 seccuss: true,
                 message: "The note has been updated",

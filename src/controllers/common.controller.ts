@@ -5,7 +5,7 @@ export async function getEmailToShare(req: Request, res: Response) {
     if (req.query.search) {
         const regSearch = new RegExp(`^${req.query.search}`, "i");
         const noteId = req.query.noteId;
-        const usersToSuggest: { id: string; email: string }[] = [];
+        const usersToSuggest: { value: string; label: string }[] = [];
 
         UserSchema.find({
             $or: [{ firstName: regSearch }, { lastName: regSearch }, { email: regSearch }],
@@ -17,7 +17,7 @@ export async function getEmailToShare(req: Request, res: Response) {
                         !note?.sharedWith.includes(user._id) &&
                         note?.userId.toString() !== user._id.toString()
                     ) {
-                        usersToSuggest.push({ id: user._id, email: user.email });
+                        usersToSuggest.push({ value: user._id, label: user.email });
                     }
                 });
                 res.status(200).send({
@@ -54,6 +54,40 @@ export async function shareNote(req: Request, res: Response) {
             res.status(401).send({
                 success: false,
                 message: err,
+            });
+        });
+}
+
+export async function sharedWithList(req: Request, res: Response) {
+    const noteId = req.query.noteId;
+
+    NoteSchema.findById(noteId)
+        .then(note => {
+            const sharedWithIds = note?.sharedWith;
+            UserSchema.find({
+                _id: { $in: sharedWithIds },
+            })
+                .then(users => {
+                    const usersNames: {userName: string, userId: string}[] = [];
+                    users.forEach(user => {
+                        usersNames.push({userName: `${user?.firstName} ${user?.lastName}`, userId: user._id});
+                    });
+                    res.status(200).send({
+                        success: true,
+                        usersNames,
+                    });
+                })
+                .catch(err => {
+                    res.status(401).send({
+                        success: false,
+                        message: err.message,
+                    });
+                });
+        })
+        .catch(err => {
+            res.status(401).send({
+                success: false,
+                message: err.message,
             });
         });
 }
