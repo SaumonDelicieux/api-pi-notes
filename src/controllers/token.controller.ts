@@ -11,63 +11,70 @@ import { JWT_SECRET } from "../configs/constants";
 
 import { resetPassword } from "../utils/email";
 
-export const sendEmailToResetPassword = (req: Request, res: Response) => {
+export function sendEmailToResetPassword(req: Request, res: Response): void {
     if (req.body.identifer) {
-        const url = `${req.protocol}://${req.hostname}`;
+        const url = `${req.protocol}://${req.get("host")}`;
 
         UserSchema.findOne({
             $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
         })
             .then(user => {
-                TokenSchema.findOne({
-                    userId: user?._id,
-                })
-                    .then(token => {
-                        if (token) {
-                            resetPassword(user!, token.token, url);
-                            res.status(200).send({
-                                success: true,
-                                message: "Email sended",
-                                email: user?.email,
-                            });
-                        } else {
-                            const userToken = jwt.sign(
-                                {
-                                    hash: randomString.generate(100),
-                                },
-                                JWT_SECRET as string,
-                                {
-                                    expiresIn: 86400,
-                                },
-                            );
-
-                            const token: IToken = new TokenSchema({
-                                userId: user?._id,
-                                token: userToken,
-                            });
-
-                            token.save();
-
-                            resetPassword(user!, token.token, url);
-
-                            res.status(200).send({
-                                success: true,
-                                message: "Email sended",
-                                email: user?.email,
-                            });
-                        }
+                if (user) {
+                    TokenSchema.findOne({
+                        userId: user?._id,
                     })
-                    .catch(() => {
-                        res.status(401).send({
-                            success: false,
-                            message: "Server error",
+                        .then(token => {
+                            if (token) {
+                                resetPassword(user!, token.token, url);
+                                res.status(200).send({
+                                    success: true,
+                                    message: "Email sended",
+                                    email: user?.email,
+                                });
+                            } else {
+                                const userToken = jwt.sign(
+                                    {
+                                        hash: randomString.generate(100),
+                                    },
+                                    JWT_SECRET as string,
+                                    {
+                                        expiresIn: 86400,
+                                    },
+                                );
+
+                                const token: IToken = new TokenSchema({
+                                    userId: user?._id,
+                                    token: userToken,
+                                });
+
+                                token.save();
+
+                                resetPassword(user!, token.token, url);
+
+                                res.status(200).send({
+                                    success: true,
+                                    message: "Email sended",
+                                    email: user?.email,
+                                });
+                            }
+                        })
+                        .catch(() => {
+                            res.status(401).send({
+                                success: false,
+                                message: "Server error",
+                            });
                         });
+                } else {
+                    res.status(201).send({
+                        success: true,
+                        message: "User not found",
                     });
+                }
             })
             .catch(() => {
                 res.status(401).send({
                     success: false,
-                    message: "User not found",
+                    message: "Error has occured",
                 });
             });
     } else {
@@ -76,7 +83,7 @@ export const sendEmailToResetPassword = (req: Request, res: Response) => {
             message: "Missing data",
         });
     }
-};
+}
 
 export const verifyIfTokenExist = (req: Request, res: Response) => {
     if (req.body.token) {
