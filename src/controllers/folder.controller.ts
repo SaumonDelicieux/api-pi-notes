@@ -1,18 +1,19 @@
 import { FolderSchema, UserSchema } from "../models";
 import { Request, Response } from "express";
 import { IFolders, IUser } from "../types";
+import { cleanFolders } from "../schedules/cleanFolder";
+import { cleanNotes } from "../schedules/cleanNote";
 
 export async function createFolder(req: Request, res: Response) {
-    UserSchema.findById(req.body.userId)
-        .then((user: IUser | null) => {
-            const folder: IFolders = new FolderSchema({
-                title: req.body.title,
-                userId: req.body.userId,
-                parentId: req.body.parentId,
-                creationDate: new Date(),
-                lastUpdateDate: new Date(),
-            });
-
+  UserSchema.findById(req.body.userId)
+    .then((user) => {
+      const folder: IFolders = new FolderSchema({
+        title: req.body.title,
+        userId: req.body.userId,
+        parentId: req.body.parentId,
+        creationDate: new Date(),
+        lastUpdateDate: new Date(),
+      });
             folder
                 .save()
                 .then((folder: IFolders) => {
@@ -52,14 +53,14 @@ export async function createFolder(req: Request, res: Response) {
 }
 
 export async function getFolders(req: Request, res: Response) {
-    FolderSchema.find({
-        userId: req.query.userId,
-    })
-        .then((folders: IFolders[]) => {
-            res.status(200).send({
-                success: true,
-                folders,
-            });
+  FolderSchema.find({
+    userId: req.query.userId,
+  })
+    .then((folders) => {
+      res.status(200).send({
+        success: true,
+        folders,
+      });
         })
         .catch(err => {
             res.status(500).send({
@@ -88,18 +89,19 @@ export async function updateFolderTitle(req: Request, res: Response) {
 
 export async function deleteFolder(req: Request, res: Response) {
     const folderId = req.query.folderId;
-
-    FolderSchema.findByIdAndRemove(folderId)
-        .then((data: IFolders | null) => {
-            if (!data) {
-                res.status(404).send({
-                    message: `Cannot delete note with id=${folderId}. Maybe this note was not found !`,
-                });
-            } else {
-                res.status(200).send({
-                    success: true,
-                    message: "Folder was deleted successfully!",
-                    folderId,
+  FolderSchema.findByIdAndRemove(folderId)
+    .then((data) => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete folder with id=${folderId}. Maybe this note was not found !`,
+        });
+      } else {
+        cleanFolders();
+        cleanNotes();
+        res.status(200).send({
+          success: true,
+          message: "Folder was deleted successfully!",
+          folderId,
                 });
             }
         })
@@ -107,5 +109,6 @@ export async function deleteFolder(req: Request, res: Response) {
             res.status(500).send({
                 message: "Could not delete note with id=" + folderId,
             });
+
         });
 }

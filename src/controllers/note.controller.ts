@@ -2,6 +2,7 @@ import { NoteSchema } from "../models";
 import { Request, Response } from "express";
 import { INote } from "../types";
 
+
 export async function createNote(req: Request, res: Response) {
     const note: INote = new NoteSchema({
         folderId: req.body.folderId,
@@ -72,7 +73,6 @@ export async function getNote(req: Request, res: Response) {
 export async function updateNote(req: Request, res: Response) {
     NoteSchema.findByIdAndUpdate(req.body.id, { $set: req.body }, { new: true })
         .then(note => {
-            console.log(note);
             res.status(200).send({
                 seccuss: true,
                 message: "The note has been updated",
@@ -90,18 +90,18 @@ export async function updateNote(req: Request, res: Response) {
 export async function deleteNote(req: Request, res: Response) {
     const noteId = req.query.noteId;
 
-    NoteSchema.findByIdAndRemove(noteId)
-        .then(data => {
-            if (!data) {
-                res.status(404).send({
-                    message: `Cannot delete note with id=${noteId}. Maybe this note was not found !`,
-                });
-            } else {
-                res.status(200).send({
-                    success: true,
-                    message: "Note was deleted successfully!",
-                    noteId,
-                });
+  NoteSchema.findByIdAndRemove(noteId)
+    .then((data: INote | null) => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete note with id=${noteId}. Maybe this note was not found !`,
+        });
+      } else {
+        res.status(200).send({
+          success: true,
+          message: "Note was deleted successfully!",
+          noteId,
+            });
             }
         })
         .catch(err => {
