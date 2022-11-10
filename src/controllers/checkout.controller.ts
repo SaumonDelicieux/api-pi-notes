@@ -132,7 +132,7 @@ export const paymentSuccess = async (req: Request, res: Response) => {
     switch (eventType) {
         case "payment_intent.succeeded":
             try {
-                const user = await UserSchema.findOne(data.object.metadata.userId);
+                const user = await UserSchema.findById(data.object.metadata.userId);
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
                 if (
@@ -141,13 +141,13 @@ export const paymentSuccess = async (req: Request, res: Response) => {
                 ) {
                     const expireDate = user.endOfsubscription;
                     expireDate.setMonth(expireDate.getMonth() + 1);
-                    UserSchema.findByIdAndUpdate(user._id, {
+                    UserSchema.findByIdAndUpdate(data.object.metadata.userId, {
                         isPremium: true,
                         endOfsubscription: expireDate,
                     });
                 } else {
                     today.setMonth(today.getMonth() + 1);
-                    UserSchema.findByIdAndUpdate(user?._id, {
+                    UserSchema.findByIdAndUpdate(data.object.metadata.userId, {
                         isPremium: true,
                         endOfsubscription: today,
                     });

@@ -13,8 +13,6 @@ import { IToken, IUser } from "../types";
 
 export function sendEmailToResetPassword(req: Request, res: Response): void {
     if (req.body.identifer) {
-        const url = `${req.protocol}://${req.get("host")}`;
-
         UserSchema.findOne({
             $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
         })
@@ -25,7 +23,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
                     })
                         .then(token => {
                             if (token) {
-                                resetPassword(user!, token.token, url);
+                                resetPassword(user!, token.token, URL_FRONT);
                                 res.status(200).send({
                                     success: true,
                                     message: "Email sended",
@@ -49,7 +47,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
 
                                 token.save();
 
-                                resetPassword(user!, token.token, url);
+                                resetPassword(user!, token.token, URL_FRONT);
 
                                 res.status(200).send({
                                     success: true,

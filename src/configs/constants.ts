@@ -23,7 +23,7 @@ export const PASS_MAIL = process.env.PASS_MAIL!;
 export const MODE = process.env.MODE!;
 
 // URL Front
-export const URL_FRONT = process.env.URL_FRONT;
+export const URL_FRONT = process.env.URL_FRONT!;
 
 import swaggerDoc from "../swagger.json";
 
