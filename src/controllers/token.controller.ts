@@ -118,11 +118,10 @@ export const verifyIfTokenExist = (req: Request, res: Response) => {
 };
 
 export const resetPasswordAndDeleteToken = (req: Request, res: Response) => {
-    if (req.headers["token"] && req.body.password) {
+    if (req.body.password && req.body.token) {
         const hashedPassword: string = bcrypt.hashSync(req.body.password, 10);
-        const tokenUser = req.headers["token"];
 
-        TokenSchema.findOne({ token: tokenUser })
+        TokenSchema.findOne({ token: req.body.token })
             .then((token: IToken | null) => {
                 UserSchema.findByIdAndUpdate(
                     { _id: token?.userId },

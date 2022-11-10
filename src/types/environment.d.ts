@@ -2,6 +2,7 @@ declare global {
     namespace NodeJS {
         interface ProcessEnv {
             MODE: "development" | "staging" | "production";
+            URL_FRONT: string;
             SEND_MAIL: string;
             PASS_MAIL: string;
             SMTPHOST: string;
