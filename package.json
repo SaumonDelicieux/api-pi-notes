@@ -10,7 +10,8 @@
     "format": "prettier --write \"src/**/*.ts\" --config ./.prettierrc.js",
     "dev": "nodemon src/index.ts",
     "start": "node dist/index.js",
-    "build": "rimraf ./build && tsc"
+    "copy-files": "cp -fr src/emails dist/emails",
+    "build": "rimraf dist && tsc && yarn copy-files"
   },
   "repository": {
     "type": "git",
