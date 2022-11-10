@@ -1,4 +1,5 @@
 import express from "express";
+
 import {
     createNote,
     getNotes,
@@ -6,6 +7,7 @@ import {
     updateNote,
     deleteNote,
 } from "../controllers/note.controller";
+
 import { verifyToken } from "../helpers/verifyToken";
 
 export const noteRouter = express.Router();

@@ -1,15 +1,20 @@
-import { TokenSchema, UserSchema } from "../models";
-import { IToken, IUser } from "../types";
-import { jwtSecret } from "../configs/index.config";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
 import randomString from "randomstring";
-import { resetPasword } from "../utils/email";
+import bcrypt from "bcrypt";
+
+import { TokenSchema, UserSchema } from "../models";
+
+import { IToken, IUser } from "../types";
+
+import { JWT_SECRET } from "../configs/constants";
+
+import { resetPassword } from "../utils/email";
 
 export function sendEmailToResetPassword(req: Request, res: Response): void {
     if (req.body.identifer) {
-        const url: string = `${req.protocol}://${req.get("host")}`;
+        const url = `${req.protocol}://${req.get("host")}`;
+
         UserSchema.findOne({
             $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
         })
@@ -20,7 +25,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
                     })
                         .then(token => {
                             if (token) {
-                                resetPasword(user!, token.token, url);
+                                resetPassword(user!, token.token, url);
                                 res.status(200).send({
                                     success: true,
                                     message: "Email sended",
@@ -31,7 +36,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
                                     {
                                         hash: randomString.generate(100),
                                     },
-                                    jwtSecret as string,
+                                    JWT_SECRET as string,
                                     {
                                         expiresIn: 86400,
                                     },
@@ -44,7 +49,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
 
                                 token.save();
 
-                                resetPasword(user!, token.token, url);
+                                resetPassword(user!, token.token, url);
 
                                 res.status(200).send({
                                     success: true,
@@ -80,7 +85,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
     }
 }
 
-export function verifyIfTokenExist(req: Request, res: Response): void {
+export const verifyIfTokenExist = (req: Request, res: Response) => {
     if (req.body.token) {
         TokenSchema.findOne({
             token: req.body.token,
@@ -110,14 +115,13 @@ export function verifyIfTokenExist(req: Request, res: Response): void {
             message: "Missing data",
         });
     }
-}
+};
 
-export function resetPasswordAndDeleteToken(req: any, res: Response): void {
-    if (req.headers["token"] && req.body.password) {
+export const resetPasswordAndDeleteToken = (req: Request, res: Response) => {
+    if (req.body.password && req.body.token) {
         const hashedPassword: string = bcrypt.hashSync(req.body.password, 10);
-        const tokenUser = req.headers["token"];
 
-        TokenSchema.findOne({ token: tokenUser })
+        TokenSchema.findOne({ token: req.body.token })
             .then((token: IToken | null) => {
                 UserSchema.findByIdAndUpdate(
                     { _id: token?.userId },
@@ -158,4 +162,4 @@ export function resetPasswordAndDeleteToken(req: any, res: Response): void {
             message: "Missing data",
         });
     }
-}
+};
