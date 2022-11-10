@@ -68,9 +68,12 @@ export async function sharedWithList(req: Request, res: Response) {
                 _id: { $in: sharedWithIds },
             })
                 .then(users => {
-                    const usersNames: {userName: string, userId: string}[] = [];
+                    const usersNames: { userName: string; userId: string }[] = [];
                     users.forEach(user => {
-                        usersNames.push({userName: `${user?.firstName} ${user?.lastName}`, userId: user._id});
+                        usersNames.push({
+                            userName: `${user?.firstName} ${user?.lastName}`,
+                            userId: user._id,
+                        });
                     });
                     res.status(200).send({
                         success: true,
@@ -88,6 +91,24 @@ export async function sharedWithList(req: Request, res: Response) {
             res.status(401).send({
                 success: false,
                 message: err.message,
+            });
+        });
+}
+
+export async function getSharedNotes(req: any, res: Response) {
+    const userId = req.data.id;
+
+    NoteSchema.find({ sharedWith: { $in: userId } })
+        .then(notes => {
+            res.status(200).send({
+                success: true,
+                notes,
+            });
+        })
+        .catch(err => {
+            res.status(401).send({
+                success: false,
+                message: err,
             });
         });
 }
