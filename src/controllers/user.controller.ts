@@ -147,13 +147,27 @@ export const getById = async (req: Request, res: Response) => {
     }
 };
 
-export const updateProfile = async (req: any, res: Response) => {
-    if (req.data.id) {
-        UserSchema.findByIdAndUpdate(req.data.id, req.body, { new: true })
+export const updateProfile = async (req: Request, res: Response) => {
+    if (req.body._id) {
+        UserSchema.findByIdAndUpdate(req.body._id, req.body, { new: true })
             .then(user => {
+                const userToken = jwt.sign(
+                    {
+                        id: user?._id,
+                        isPremium: user?.isPremium,
+                        firstName: user?.firstName,
+                        lastName: user?.lastName,
+                        email: user?.email,
+                    },
+                    JWT_SECRET as string,
+                    {
+                        expiresIn: 86400,
+                    },
+                );
+
                 res.status(200).send({
                     success: true,
-                    user,
+                    token: userToken,
                 });
             })
             .catch(err => {
