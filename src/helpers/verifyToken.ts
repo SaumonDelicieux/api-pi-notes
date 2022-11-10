@@ -23,7 +23,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
             });
         }
 
-        req.user = user;
+        // req.user = user as any;
         next();
     });
 };
