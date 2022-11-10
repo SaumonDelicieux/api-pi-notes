@@ -1,10 +1,12 @@
 import express from "express";
+
 import {
     createFolder,
     deleteFolder,
     updateFolderTitle,
     getFolders,
 } from "../controllers/folder.controller";
+
 import { verifyToken } from "../helpers/verifyToken";
 
 export const folderRouter = express.Router();

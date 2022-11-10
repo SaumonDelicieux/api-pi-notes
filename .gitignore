@@ -1,5 +1,9 @@
-/node_modules
+# Node modules
+node_modules/
+
+# Environment
 .env
-package-lock.json
-/dist
+
+# Build
+dist/
 

@@ -1,10 +1,14 @@
 import express from "express";
-import { port, swaggerPassword } from "../configs/index.config";
-import { noteRouter, userRouter, folderRouter, checkoutRouter, commonRouter } from "../routes";
-import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import basicAuth from "express-basic-auth";
+import cors from "cors";
+
+import { PORT, SWAGGER_PASSWORD } from "../configs/constants";
+
+import { rootRouter } from "../routes";
+
 import * as swaggerJson from "../swagger.json";
+
 import schedule from "../schedules";
 
 const app = express();
@@ -19,15 +23,16 @@ app.use(function (req, res, next) {
 app.use(cors());
 app.use(
     "/docApi",
-    basicAuth({ users: { Admin: `${swaggerPassword}` }, challenge: true }),
+    basicAuth({ users: { Admin: SWAGGER_PASSWORD }, challenge: true }),
     swaggerUi.serve,
     swaggerUi.setup(swaggerJson),
 );
-app.use("/api/v1/", [noteRouter, userRouter, folderRouter, checkoutRouter, commonRouter]);
+app.use("/api/v1/", rootRouter);
 
 export function start(): void {
-    app.listen(port, () => {
-        console.log(`App listening on PORT ${port}`);
+    app.listen(PORT, () => {
+        console.log(`App listening on PORT ${PORT}`);
     });
 }
+
 schedule();

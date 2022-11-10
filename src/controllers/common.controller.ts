@@ -1,7 +1,8 @@
-import { UserSchema, NoteSchema } from "../models";
 import { Request, Response } from "express";
 
-export async function getEmailToShare(req: Request, res: Response) {
+import { UserSchema, NoteSchema } from "../models";
+
+export const getEmailToShare = async (req: Request, res: Response) => {
     if (req.query.search) {
         const regSearch = new RegExp(`^${req.query.search}`, "i");
         const noteId = req.query.noteId;
@@ -37,9 +38,9 @@ export async function getEmailToShare(req: Request, res: Response) {
             message: "Missing data",
         });
     }
-}
+};
 
-export async function shareNote(req: Request, res: Response) {
+export const shareNote = async (req: Request, res: Response) => {
     const noteId = req.body.noteId;
     const usersId = req.body.usersId;
 
@@ -56,7 +57,7 @@ export async function shareNote(req: Request, res: Response) {
                 message: err,
             });
         });
-}
+};
 
 export async function sharedWithList(req: Request, res: Response) {
     const noteId = req.query.noteId;
@@ -68,9 +69,12 @@ export async function sharedWithList(req: Request, res: Response) {
                 _id: { $in: sharedWithIds },
             })
                 .then(users => {
-                    const usersNames: {userName: string, userId: string}[] = [];
+                    const usersNames: { userName: string; userId: string }[] = [];
                     users.forEach(user => {
-                        usersNames.push({userName: `${user?.firstName} ${user?.lastName}`, userId: user._id});
+                        usersNames.push({
+                            userName: `${user?.firstName} ${user?.lastName}`,
+                            userId: user._id,
+                        });
                     });
                     res.status(200).send({
                         success: true,
@@ -88,6 +92,24 @@ export async function sharedWithList(req: Request, res: Response) {
             res.status(401).send({
                 success: false,
                 message: err.message,
+            });
+        });
+}
+
+export async function getSharedNotes(req: any, res: Response) {
+    const userId = req.data.id;
+
+    NoteSchema.find({ sharedWith: { $in: userId } })
+        .then(notes => {
+            res.status(200).send({
+                success: true,
+                notes,
+            });
+        })
+        .catch(err => {
+            res.status(401).send({
+                success: false,
+                message: err,
             });
         });
 }

@@ -1,20 +1,24 @@
-import { UserSchema } from "../models";
 import { Request, Response } from "express";
-import { jwtSecret } from "../configs/index.config";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { IUser, IUserDetail } from "../types";
-import { registerSucces } from "../utils/email";
 
-export async function register(req: Request, res: Response) {
+import { UserSchema } from "../models";
+
+import { JWT_SECRET } from "../configs/constants";
+
+import { IUser, IUserDetail } from "../types";
+
+import { registerSuccess } from "../utils/email";
+
+export const register = async (req: Request, res: Response) => {
     const hashedPassword = bcrypt.hashSync(req.body.password, 10);
 
     const user: IUser = new UserSchema({
-        firstName: req.body.firstName ?? "",
-        lastName: req.body.lastName ?? "",
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         email: req.body.email,
         password: hashedPassword,
-        phoneNumber: req.body.phoneNumber ?? "",
+        phoneNumber: req.body.phoneNumber,
         isPremium: false,
         creationDate: new Date(),
         lastUpdateDate: new Date(),
@@ -30,7 +34,7 @@ export async function register(req: Request, res: Response) {
                     lastName: user.lastName,
                     email: user.email,
                 },
-                jwtSecret as string,
+                JWT_SECRET as string,
                 {
                     expiresIn: "30d",
                     algorithm: "HS256",
@@ -43,7 +47,8 @@ export async function register(req: Request, res: Response) {
                 email: req.body.email,
                 phoneNumber: req.body.phoneNumber,
             };
-            registerSucces(userSend);
+
+            registerSuccess(userSend);
 
             res.status(200).send({
                 success: true,
@@ -58,9 +63,9 @@ export async function register(req: Request, res: Response) {
                 email: req.body.email,
             });
         });
-}
+};
 
-export function login(req: Request, res: Response): void {
+export const login = (req: Request, res: Response) => {
     if (req.body.identifer && req.body.password) {
         UserSchema.findOne({
             $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
@@ -82,7 +87,7 @@ export function login(req: Request, res: Response): void {
                                 lastName: user.lastName,
                                 email: user.email,
                             },
-                            jwtSecret as string,
+                            JWT_SECRET as string,
                             {
                                 expiresIn: 86400,
                             },
@@ -112,9 +117,9 @@ export function login(req: Request, res: Response): void {
             message: "Missing data",
         });
     }
-}
+};
 
-export async function getById(req: Request, res: Response) {
+export const getById = async (req: Request, res: Response) => {
     if (req.query.id) {
         UserSchema.findById(req.query.id)
             .then(user => {
@@ -140,15 +145,29 @@ export async function getById(req: Request, res: Response) {
                 });
             });
     }
-}
+};
 
-export async function updateProfile(req: any, res: Response) {
-    if (req.data.id) {
-        UserSchema.findByIdAndUpdate(req.data.id, req.body, { new: true })
+export const updateProfile = async (req: Request, res: Response) => {
+    if (req.body._id) {
+        UserSchema.findByIdAndUpdate(req.body._id, req.body, { new: true })
             .then(user => {
+                const userToken = jwt.sign(
+                    {
+                        id: user?._id,
+                        isPremium: user?.isPremium,
+                        firstName: user?.firstName,
+                        lastName: user?.lastName,
+                        email: user?.email,
+                    },
+                    JWT_SECRET as string,
+                    {
+                        expiresIn: 86400,
+                    },
+                );
+
                 res.status(200).send({
                     success: true,
-                    user,
+                    token: userToken,
                 });
             })
             .catch(err => {
@@ -163,4 +182,4 @@ export async function updateProfile(req: any, res: Response) {
             message: "Missing data",
         });
     }
-}
+};

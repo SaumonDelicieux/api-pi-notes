@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export interface IFolders extends mongoose.Document {
+export interface IFolder extends mongoose.Document {
     id: string;
     title: string;
     parentId?: string;
