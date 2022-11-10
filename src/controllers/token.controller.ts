@@ -1,20 +1,18 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import randomString from "randomstring";
 import bcrypt from "bcrypt";
+import randomString from "randomstring";
+
+import { resetPassword } from "../utils/email";
+
+import { URL_FRONT, JWT_SECRET } from "../configs/constants";
 
 import { TokenSchema, UserSchema } from "../models";
 
 import { IToken, IUser } from "../types";
 
-import { JWT_SECRET } from "../configs/constants";
-
-import { resetPassword } from "../utils/email";
-
 export function sendEmailToResetPassword(req: Request, res: Response): void {
     if (req.body.identifer) {
-        const url = `${req.protocol}://${req.get("host")}`;
-
         UserSchema.findOne({
             $or: [{ email: req.body.identifer }, { phoneNumber: req.body.identifer }],
         })
@@ -25,7 +23,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
                     })
                         .then(token => {
                             if (token) {
-                                resetPassword(user!, token.token, url);
+                                resetPassword(user!, token.token, URL_FRONT);
                                 res.status(200).send({
                                     success: true,
                                     message: "Email sended",
@@ -49,7 +47,7 @@ export function sendEmailToResetPassword(req: Request, res: Response): void {
 
                                 token.save();
 
-                                resetPassword(user!, token.token, url);
+                                resetPassword(user!, token.token, URL_FRONT);
 
                                 res.status(200).send({
                                     success: true,
