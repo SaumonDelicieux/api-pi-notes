@@ -97,7 +97,7 @@ export async function sharedWithList(req: Request, res: Response) {
 }
 
 export async function getSharedNotes(req: any, res: Response) {
-    const userId = req.data.id;
+    const userId = req.data._id;
 
     NoteSchema.find({ sharedWith: { $in: userId } })
         .then(notes => {
