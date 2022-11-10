@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { IFolders } from "../types";
+
+import { IFolder } from "../types/IFolder";
 
 const Schema = mongoose.Schema;
 
@@ -26,4 +27,4 @@ const folderSchema = new Schema({
     },
 });
 
-export const FolderSchema = mongoose.model<IFolders>("Folder", folderSchema);
+export const FolderSchema = mongoose.model<IFolder>("Folder", folderSchema);

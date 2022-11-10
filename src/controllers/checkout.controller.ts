@@ -6,18 +6,18 @@ import jwt from "jsonwebtoken";
 import { UserSchema } from "../models";
 
 import {
-    jwtSecret,
-    Mode,
-    StripePrivateKey,
-    WebhooksKey,
-    WebhooksKeyLocal,
-} from "../configs/index.config";
+    JWT_SECRET,
+    MODE,
+    STRIPE_PRIVATE_KEY,
+    STRIPE_WH_KEY,
+    STRIPE_WH_KEY_LOCAL,
+} from "../configs/constants";
 
 const TITLE_PRODUCT = "Pi'Note | Premium";
 const DESCRIPTION_PRODUCT = "Possibilité de partager une note avec d'autres collaborateurs";
 const PREMIUM_PRICE = 3000; // 30.00€
 
-const stripeClient = new Stripe(StripePrivateKey!, {
+const stripeClient = new Stripe(STRIPE_PRIVATE_KEY, {
     apiVersion: "2022-08-01",
 });
 
@@ -83,7 +83,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
                     lastName: user.lastName,
                     email: user.email,
                 },
-                jwtSecret as string,
+                JWT_SECRET as string,
                 {
                     expiresIn: "30d",
                     algorithm: "HS256",
@@ -109,7 +109,7 @@ export const paymentSuccess = async (req: Request, res: Response) => {
     let data;
     let eventType;
 
-    const whKey = Mode === "development" ? WebhooksKeyLocal : WebhooksKey;
+    const whKey = MODE === "development" ? STRIPE_WH_KEY_LOCAL : STRIPE_WH_KEY;
     const sig = req.headers["stripe-signature"] as string;
 
     if (whKey && sig) {
