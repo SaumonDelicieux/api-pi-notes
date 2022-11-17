@@ -23,7 +23,8 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
             });
         }
 
-        // req.user = user as any;
+        // @ts-ignore
+        req.data = user;
         next();
     });
 };

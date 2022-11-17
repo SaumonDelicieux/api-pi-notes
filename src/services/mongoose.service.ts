@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
-import { DB_URI } from "../configs/constants";
+import { DB_URI, MODE } from "../configs/constants";
 
 export function dbConnect() {
     mongoose
-        .connect(DB_URI)
+        .connect(DB_URI, { dbName: MODE })
         .then(() => {
             console.log("Successfully connected to the database");
         })
