@@ -141,13 +141,13 @@ export const paymentSuccess = async (req: Request, res: Response) => {
                 ) {
                     const expireDate = user.endOfsubscription;
                     expireDate.setMonth(expireDate.getMonth() + 1);
-                    UserSchema.findByIdAndUpdate(data.object.metadata.userId, {
+                    await UserSchema.findByIdAndUpdate(data.object.metadata.userId, {
                         isPremium: true,
                         endOfsubscription: expireDate,
                     });
                 } else {
                     today.setMonth(today.getMonth() + 1);
-                    UserSchema.findByIdAndUpdate(data.object.metadata.userId, {
+                    await UserSchema.findByIdAndUpdate(data.object.metadata.userId, {
                         isPremium: true,
                         endOfsubscription: today,
                     });
