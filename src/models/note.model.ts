@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 import { INote } from "../types";
 
 const Schema = mongoose.Schema;

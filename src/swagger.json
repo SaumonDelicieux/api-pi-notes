@@ -5,16 +5,16 @@
         "title": "PI'notes",
         "description": "CRUD of PI'notes app",
         "license": {
-            "name": "MIT",
-            "url": "https://opensource.org/licenses/MIT"
+            "name": "ISC",
+            "url": "https://opensource.org/licenses/ISC"
         }
     },
     "host": "",
     "basePath": "",
     "tags": [
         {
-            "name": "PI'notes",
-            "description": "CRUD of PI'notes app"
+            "name": "Pi'Notes",
+            "description": "CRUD of Pi'Notes app"
         }
     ],
     "consumes": [

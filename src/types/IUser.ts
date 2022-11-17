@@ -7,6 +7,7 @@ export interface IUser extends mongoose.Document {
     password?: string;
     phoneNumber?: string;
     isPremium?: boolean;
+    endOfsubscription?: Date;
     creationDate?: Date;
     lastUpdateDate?: Date;
 }
@@ -18,6 +19,7 @@ export interface IUserDetail {
     password?: string;
     phoneNumber?: string;
     isPremium?: boolean;
+    endOfsubscription?: Date;
     creationDate?: Date;
     lastUpdateDate?: Date;
 }

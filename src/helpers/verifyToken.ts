@@ -1,8 +1,11 @@
+import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { jwtSecret } from "../configs/index.config";
 
-export function verifyToken(req: any, res: any, next: any) {
+import { JWT_SECRET } from "../configs/constants";
+
+export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers["authorization"];
+
     if (!token) {
         return res.status(403).send({
             auth: false,
@@ -11,7 +14,7 @@ export function verifyToken(req: any, res: any, next: any) {
         });
     }
 
-    jwt.verify(token, jwtSecret as string, function (error: any, jwtdecoded: any) {
+    jwt.verify(token, JWT_SECRET as string, (error, user) => {
         if (error) {
             return res.status(401).send({
                 auth: false,
@@ -19,7 +22,9 @@ export function verifyToken(req: any, res: any, next: any) {
                 message: "Not autorized",
             });
         }
-        req.data = jwtdecoded;
+
+        // @ts-ignore
+        req.data = user;
         next();
     });
-}
+};
